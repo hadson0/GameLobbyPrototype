@@ -1,4 +1,4 @@
-#include "messageprocessorhandler.h"
+#include "messageprocesshandler.h"
 
 MessageProcessHandler::MessageProcessHandler(QObject *parent)
     : QObject{parent} {}
@@ -42,9 +42,10 @@ void MessageProcessHandler::processMessage(QString message) {
     //type:newLobbyCreated;payLoad:1234;clientList:4312,856,5678
     else if (type == "newLobbyCreated" || type == "joinSuccess") {
         lobbyID = getMessageData(separated, "payLoad");
-        clientList = getMessageData(separated, "clientList").split(separator);
+        QString clientListString = getMessageData(separated, "clientList");
+        clientList = clientListString.split(separator);
 
-        qDebug() << "Client App: Clients in lobby: " << clientList;
+        qDebug() << "Client App: Clients in lobby: " << clientListString;
 
         if (!lobbyID.isEmpty() && !clientList.isEmpty())
             emit newLobby(lobbyID, clientList);
@@ -64,7 +65,7 @@ void MessageProcessHandler::processMessage(QString message) {
     else if (type == "lobbyMessage") {
         qDebug() << "Client App: New lobby message received";
 
-        lobbyMessage = getMessageData(separated, "lobbyMessage");
+        lobbyMessage = getMessageData(separated, "payLoad");
         senderID = getMessageData(separated, "senderID");
 
         QString displayMessage = senderID + ": " + lobbyMessage;

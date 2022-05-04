@@ -6,17 +6,40 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 
 SOURCES += \
-    Controllers/messageprocessorhandler.cpp \
+    Controllers/gamemanager.cpp \
+    Controllers/messageprocesshandler.cpp \
     Controllers/websockethandler.cpp \
-    UI/custombutton.cpp \
-    UI/mainmenuwindow.cpp \
+    UI/Components/backgroundedframe.cpp \
+    UI/Components/chatframe.cpp \
+    UI/Components/clientlistview.cpp \
+    UI/Components/customlabel.cpp \
+    UI/Components/customlineedit.cpp \
+    UI/Components/customtextedit.cpp \
+    UI/Screens/joinlobbyscreen.cpp \
+    UI/Screens/lobbyscreen.cpp \
+    UI/Screens/screen.cpp \
+    UI/Screens/mainmenuscreen.cpp \
+    UI/Screens/selectionscreen.cpp \
+    UI/mainwindow.cpp \
     main.cpp \
 
+
 HEADERS += \
-    Controllers/messageprocessorhandler.h \
+    Controllers/gamemanager.h \
+    Controllers/messageprocesshandler.h \
     Controllers/websockethandler.h \
-    UI/custombutton.h \
-    UI/mainmenuwindow.h
+    UI/Components/backgroundedframe.h \
+    UI/Components/chatframe.h \
+    UI/Components/clientlistview.h \
+    UI/Components/customlabel.h \
+    UI/Components/customlineedit.h \
+    UI/Components/customtextedit.h \
+    UI/Screens/joinlobbyscreen.h \
+    UI/Screens/lobbyscreen.h \
+    UI/Screens/screen.h \
+    UI/Screens/mainmenuscreen.h \
+    UI/Screens/selectionscreen.h \
+    UI/mainwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

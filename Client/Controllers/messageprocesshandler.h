@@ -1,10 +1,9 @@
-#ifndef MESSAGEPROCESSORHANDLER_H
-#define MESSAGEPROCESSORHANDLER_H
+#ifndef MESSAGEPROCESSHANDLER_H
+#define MESSAGEPROCESSHANDLER_H
 
 #include <QObject>
 #include <QRegularExpression>
 #include <QDebug>
-#include <QStringList>
 
 class MessageProcessHandler : public QObject {
     Q_OBJECT
@@ -21,4 +20,4 @@ signals:
     void newLobbyMessage(QString message);
 };
 
-#endif // MESSAGEPROCESSORHANDLER_H
+#endif // MESSAGEPROCESSHANDLER_H
