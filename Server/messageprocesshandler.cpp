@@ -34,7 +34,7 @@ void MessageProcessHandler::processMessage(QString message) {
 
         senderID = getMessageData(separated, "senderID");
         if (!senderID.isEmpty())
-            emit createGameRequest(senderID);
+            emit createLobbyRequest(senderID);
     }
 
     //type:joinGame;payLoad:1234;sender:5678
@@ -45,7 +45,7 @@ void MessageProcessHandler::processMessage(QString message) {
         senderID = getMessageData(separated, "senderID");
 
         if (!lobbyID.isEmpty() && !senderID.isEmpty())
-            emit joinGameRequest(lobbyID, senderID);
+            emit joinLobbyRequest(lobbyID, senderID);
     }
 
     //type:message;payLoad:HelloLobby;lobbyID:1234senderID:5678

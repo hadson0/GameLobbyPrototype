@@ -14,8 +14,8 @@ public slots:
     void processMessage(QString message);
 
 signals:
-    void createGameRequest(QString uniqueID);
-    void joinGameRequest(QString lobbyID, QString uniqueID);
+    void createLobbyRequest(QString clientID);
+    void joinLobbyRequest(QString lobbyID, QString uniqueID);
     void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
 };
 

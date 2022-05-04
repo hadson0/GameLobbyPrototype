@@ -3,13 +3,21 @@
 
 #include <QObject>
 #include <random>
+#include <QDebug>
+
 #include "websockethandler.h"
 #include "messageprocesshandler.h"
 #include "gamelobbyhandler.h"
 
-class GameManager : public QObject
-{
+class GameManager : public QObject {
     Q_OBJECT
+
+    QString lobbyID;
+    QMap<QString, GameLobbyHandler*> lobbyMap;
+
+    WebSocketHandler *webSocketHandler;
+    MessageProcessHandler *messageProcessorHandler;
+
 public:
     explicit GameManager(QObject *parent = nullptr);
     ~GameManager();
@@ -19,16 +27,7 @@ public:
 public slots:
     void createLobbyRequest(QString clientID);
     void joinLobbyRequest(QString lobbyId, QString clientID);
-    void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
-
-signals:
-
-private:
-    QString lobbyID;
-    QMap<QString, GameLobbyHandler*> lobbyMap;
-
-    WebSocketHandler *webSocketHandler;
-    MessageProcessHandler *messageProcessorHandler;
+    void messageLobbyRequest(QString message, QString lobbyID, QString senderID);   
 };
 
 #endif // GAMEMANAGER_H

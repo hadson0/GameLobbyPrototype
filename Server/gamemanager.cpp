@@ -3,12 +3,12 @@
 GameManager::GameManager(QObject *parent)
     : QObject{parent} {
     webSocketHandler = new WebSocketHandler(this);
+    messageProcessorHandler = new MessageProcessHandler(this);
 
     //Coneccts signals and slots
     connect(webSocketHandler, &WebSocketHandler::newMessageToProcess, messageProcessorHandler, &MessageProcessHandler::processMessage);
-
-    connect(messageProcessorHandler, &MessageProcessHandler::createGameRequest, this, &GameManager::createLobbyRequest);
-    connect(messageProcessorHandler, &MessageProcessHandler::joinGameRequest, this, &GameManager::joinLobbyRequest);
+    connect(messageProcessorHandler, &MessageProcessHandler::createLobbyRequest, this, &GameManager::createLobbyRequest);
+    connect(messageProcessorHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::messageLobbyRequest, this, &GameManager::messageLobbyRequest);
 }
 
