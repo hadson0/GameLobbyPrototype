@@ -4,7 +4,7 @@ MessageProcessHandler::MessageProcessHandler(QObject *parent)
     : QObject{parent} {}
 
 // Extracts the data from the message and returns it
-QString getMessageData(QStringList messageSeparated, QString dataIdentifier) {
+QString MessageProcessHandler::getMessageData(QStringList messageSeparated, QString dataIdentifier) {
     for(QString &message : messageSeparated) {
         if (message.contains(dataIdentifier))
             return message.remove(dataIdentifier + ":");

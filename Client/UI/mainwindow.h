@@ -2,20 +2,31 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QDebug>
+#include <QApplication>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include "Controllers/gamemanager.h"
+#include "Screens/mainmenuscreen.h"
+#include "Screens/selectionscreen.h"
+#include "Screens/lobbyscreen.h"
+#include "Screens/joinlobbyscreen.h"
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    const int width = 1200, height = 675;
 
-private:
-    Ui::MainWindow *ui;
+    Screen *currentMenuScreen, *lobbyScreen;
+
+    GameManager *gameManager;
+
+public:
+    MainWindow(GameManager *gameManager, QWidget *parent = nullptr);
+
+
+public slots:
+    void displayScreen(QString targetScreen);
 };
 #endif // MAINWINDOW_H

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QDebug>
+#include <QStringList>
 
 class MessageProcessHandler : public QObject {
     Q_OBJECT
