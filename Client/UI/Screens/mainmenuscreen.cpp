@@ -11,7 +11,7 @@ MainMenuScreen::MainMenuScreen(QWidget *parent)
 
     // Quit Button
     quitButton = new QPushButton("Quit", this);
-    connect(quitButton, &QPushButton::clicked, this, &MainMenuScreen::onQuitButtonPressed);
+    connect(quitButton, &QPushButton::clicked, this, &Screen::quitApplicationRequest);
 }
 
 void MainMenuScreen::resizeEvent(QResizeEvent *event) {
@@ -39,10 +39,5 @@ void MainMenuScreen::resizeEvent(QResizeEvent *event) {
 }
 
 void MainMenuScreen::onPlayButtonPressed() {
-    onScreenChanged();
-    emit screenChanged("SelectionScreen");
-}
-
-void MainMenuScreen::onQuitButtonPressed() {
-    QApplication::quit();
+    emit displayMenuScreenRequest("SelectionScreen");
 }

@@ -5,7 +5,6 @@
 #include <QIntValidator>
 
 #include "screen.h"
-#include "Controllers/gamemanager.h"
 #include "UI/Components/customlabel.h"
 #include "UI/Components/customlineedit.h"
 
@@ -16,21 +15,13 @@ class JoinLobbyScreen : public Screen {
     QPushButton *joinButton, *backButton;
     CustomLineEdit *lobbyIDInputEdit;
 
-    GameManager *gameManager;
-
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit JoinLobbyScreen(GameManager *gameManager, QWidget *parent = nullptr);
+    explicit JoinLobbyScreen(QWidget *parent = nullptr);
 
 public slots:
-    void onBackButtonClicked();
     void onJoinButtonClicked();
-
-    void onLobbyIDChanged(QString newLobbyID);
-
-signals:
-    void sendMessage(QString message);
 };
 
 #endif // JOINLOBBYSCREEN_H

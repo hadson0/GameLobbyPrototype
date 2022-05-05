@@ -1,13 +1,13 @@
     #include "selectionscreen.h"
 
-SelectionScreen::SelectionScreen(GameManager *gameManager, QWidget *parent)
-    : Screen(parent), gameManager(gameManager) {
+SelectionScreen::SelectionScreen(QWidget *parent)
+    : Screen(parent) {
     // Game Title Label
     label = new CustomLabel("Game Lobby Prototype", this);
 
     // Create Lobby Button
     createLobbyButton = new QPushButton("Create Lobby", this);
-    connect(createLobbyButton, &QPushButton::clicked, this, &SelectionScreen::onCreateLobbyButtonClicked);
+    connect(createLobbyButton, &QPushButton::clicked, this, &SelectionScreen::onCreateLobbyCklicked);
 
     // Join Lobby Button
     joinLobbyButton = new QPushButton("Join Lobby", this);    
@@ -15,9 +15,7 @@ SelectionScreen::SelectionScreen(GameManager *gameManager, QWidget *parent)
 
     // Back Button
     backButton = new QPushButton("Back", this);
-    connect(backButton, &QPushButton::clicked, this, &SelectionScreen::onBackButtonClicked);
-
-    connect(gameManager, &GameManager::lobbyIDChanged, this, &SelectionScreen::onLobbyIDChanged);
+    connect(backButton, &QPushButton::clicked, this, &Screen::backRequest);
 }
 
 void SelectionScreen::resizeEvent(QResizeEvent *event) {
@@ -50,21 +48,10 @@ void SelectionScreen::resizeEvent(QResizeEvent *event) {
     backButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
 }
 
-void SelectionScreen::onCreateLobbyButtonClicked() {
-    gameManager->createGameRequest();
+void SelectionScreen::onCreateLobbyCklicked() {
+    emit sendRequestMessage("type:createLobbyRequest;payload:0");
 }
 
 void SelectionScreen::onJoinLobbyButtonClicked() {
-    onScreenChanged();
-    emit screenChanged("JoinLobbyScreen");
-}
-
-void SelectionScreen::onBackButtonClicked() {
-    onScreenChanged();
-    emit screenChanged("MainMenuScreen");
-}
-
-void SelectionScreen::onLobbyIDChanged(QString newLobbyID) {
-    onScreenChanged();
-    emit screenChanged("LobbyScreen:" + newLobbyID);
+    emit displayMenuScreenRequest("JoinLobbyScreen");
 }

@@ -7,7 +7,7 @@
 class CustomLineEdit : public QLineEdit {
     Q_OBJECT
 
-    //QFont fontAux; // Auxiliar variable to manage the label text font
+    // QFont fontAux; // Auxiliar variable to manage the label text font
 
     void keyPressEvent(QKeyEvent *event);
     //void resizeEvent(QResizeEvent *event);

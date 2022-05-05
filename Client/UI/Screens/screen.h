@@ -11,10 +11,11 @@ public:
     Screen(QWidget *parent);
     ~Screen();
 
-    void onScreenChanged();
-
 signals:
-    void screenChanged(QString targetScreen);
+    void sendRequestMessage(QString requestMessage);
+    void displayMenuScreenRequest(QString destinationScreen);
+    void backRequest();
+    void quitApplicationRequest();
 };
 
 #endif // SCREEN_H

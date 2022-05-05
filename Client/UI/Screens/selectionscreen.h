@@ -5,7 +5,6 @@
 #include <QPushButton>
 
 #include "screen.h"
-#include "Controllers/gamemanager.h"
 #include "UI/Components/customlabel.h"
 
 class SelectionScreen : public Screen {
@@ -15,19 +14,14 @@ class SelectionScreen : public Screen {
     QPushButton *createLobbyButton, *joinLobbyButton;
     QPushButton *backButton;
 
-    GameManager *gameManager;
-
     void resizeEvent(QResizeEvent *event);
 
 public:
-    SelectionScreen(GameManager *gameManager, QWidget *parent);
+    SelectionScreen(QWidget *parent);
 
 public slots:
-    void onCreateLobbyButtonClicked();
+    void onCreateLobbyCklicked();
     void onJoinLobbyButtonClicked();
-    void onBackButtonClicked();
-
-    void onLobbyIDChanged(QString newLobbyID);
 };
 
 #endif // SELECTIONSCREEN_H

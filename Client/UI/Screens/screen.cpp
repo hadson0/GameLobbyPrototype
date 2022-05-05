@@ -3,14 +3,9 @@
 Screen::Screen(QWidget *parent)
     : QFrame{parent} {
     // A screen aways has the window's full size
-    this->setFixedSize(parent->width(), parent->height());
-    this->move(0, 0);
+    this->setGeometry(0, 0, parent->width(), parent->height());
 }
 
 Screen::~Screen(){
-    onScreenChanged();
-}
-
-void Screen::onScreenChanged() {
     this->hide();
 }

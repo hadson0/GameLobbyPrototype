@@ -6,27 +6,34 @@
 #include <QPaintEvent>
 #include <QDebug>
 #include <QApplication>
+#include <QStack>
 
 #include "Controllers/gamemanager.h"
+#include "Controllers/websockethandler.h"
+
 #include "Screens/mainmenuscreen.h"
 #include "Screens/selectionscreen.h"
 #include "Screens/lobbyscreen.h"
 #include "Screens/joinlobbyscreen.h"
 
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
-    const int width = 1200, height = 675;
-
-    Screen *currentMenuScreen, *lobbyScreen;
+    QStack<Screen *> menuScreenStack;
+    LobbyScreen *lobbyScreen;
 
     GameManager *gameManager;
+    WebSocketHandler *webSocketHandler;
 
 public:
-    MainWindow(GameManager *gameManager, QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
 
+    void displayMenuScreen(QString targetScreen);
+    void displayLobbyScreen(QString lobbyID);
 
 public slots:
-    void displayScreen(QString targetScreen);
+    void onBackRequested();
+    void onQuitApplicationRequested();
 };
 #endif // MAINWINDOW_H

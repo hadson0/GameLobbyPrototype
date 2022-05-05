@@ -21,27 +21,29 @@ public:
     QString getLobbyID();
     QStringList getClientsInLobby();
 
-    void createGameRequest();
-    void joinLobbyRequest(QString lobbyID);    
 
 public slots:
-    void sendMessageToLobby(QString message);
+    void onCreateLobbyRequested();
+    void onJoinLobbyRequested(QString lobbyID);
+    void onSendLobbyMessageRequested(QString message);
 
     void setLobbyID(QString lobbyID);
     void setClientList(QStringList clients);
 
-    void processSocketMessage(QString message);
     void registerUniqueID(QString uniqueID);
 
     void onLobbyJoined(QString lobbyID, QStringList clients);
 
 signals:
+    void processSocketMessage(QString message);
+    void processScreenMessage(QString message);
+
     void lobbyIDChanged(QString newLobbyID);
     void clientsInLobbyChanged();
 
-    void newMessageReadyToSend(QString message);
     void inGameLobby();
-    void newLobbyMessage(QString message);
+    void newMessageReadyToSend(QString message);
+    void newLobbyMessageRecieved(QString message);
 };
 
 #endif // GAMEMANAGER_H

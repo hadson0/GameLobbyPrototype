@@ -11,7 +11,7 @@ public:
     explicit MessageProcessHandler(QObject *parent = nullptr);
 
 public slots:
-    void processMessage(QString message);
+    void processSocketMessage(QString message);
 
 signals:
     void createLobbyRequest(QString clientID);

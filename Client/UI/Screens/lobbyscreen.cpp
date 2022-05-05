@@ -1,7 +1,7 @@
 #include "lobbyscreen.h"
 
-LobbyScreen::LobbyScreen(QString lobbyID, GameManager *gameManager, QWidget *parent)
-    : Screen{parent}, padding(25), lobbyID(lobbyID), gameManager(gameManager) {
+LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
+    : Screen{parent}, padding(25), lobbyID(lobbyID) {
     // Lobby ID Label    
     lobbyIDLabel = new CustomLabel("Lobby Code: " + lobbyID, this);
 
@@ -10,8 +10,8 @@ LobbyScreen::LobbyScreen(QString lobbyID, GameManager *gameManager, QWidget *par
 
     // Chat Frame
     chatFrame = new ChatFrame(this);
-    connect(chatFrame, &ChatFrame::sendMessage, gameManager, &GameManager::sendMessageToLobby);
-    connect(gameManager, &GameManager::newLobbyMessage, chatFrame, &ChatFrame::onMessageRecieved);
+    connect(chatFrame, &ChatFrame::sendMessage, this, &LobbyScreen::requestSendLobbyMessage);
+    connect(this, &LobbyScreen::newMessageRecieved, chatFrame, &ChatFrame::onMessageRecieved);
 }
 
 void LobbyScreen::resizeEvent(QResizeEvent *event) {
@@ -31,4 +31,9 @@ void LobbyScreen::resizeEvent(QResizeEvent *event) {
     int chatFrameX = clientListViewWidth + 2 * padding, chatFrameY = clientListViewY;
     int chatFrameWidth = (this->width() - 3 * padding) * 0.6, chatFrameHeight = clientListViewHeight;
     chatFrame->setGeometry(chatFrameX, chatFrameY, chatFrameWidth, chatFrameHeight);
+}
+
+
+void LobbyScreen::requestSendLobbyMessage(QString message) {
+    emit sendRequestMessage("type:sendLobbyMessageRequest;payload:" + message);
 }

@@ -14,7 +14,7 @@ QString getMessageData(QStringList messageSeparated, QString dataIdentifier) {
     return QString();
 }
 
-void MessageProcessHandler::processMessage(QString message) {
+void MessageProcessHandler::processSocketMessage(QString message) {
     qDebug() << "Server App: Message to process: " << message;
 
     // Separates the message

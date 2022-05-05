@@ -4,7 +4,6 @@
 #include <QFrame>
 
 #include "screen.h"
-#include "Controllers/gamemanager.h"
 #include "UI/Components/clientlistview.h"
 #include "UI/Components/chatframe.h"
 #include "UI/Components/customlabel.h"
@@ -19,12 +18,16 @@ class LobbyScreen : public Screen {
     ChatFrame *chatFrame;
     QString lobbyID;
 
-    GameManager *gameManager;
-
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit LobbyScreen(QString lobbyID, GameManager *gameManager, QWidget *parent);
+    explicit LobbyScreen(QString lobbyID, QWidget *parent);
+
+public slots:
+    void requestSendLobbyMessage(QString message);
+
+signals:
+    void newMessageRecieved(QString message);
 };
 
 #endif // LOBBYSCREEN_H

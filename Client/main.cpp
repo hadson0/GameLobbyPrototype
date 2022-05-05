@@ -2,31 +2,23 @@
 #include <QFile>
 
 #include "UI/mainwindow.h"
-#include "Controllers/websockethandler.h"
-#include "Controllers/gamemanager.h"
 
 const QString getStyleSheet();
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    WebSocketHandler webSocketHandler;
-    webSocketHandler.connectToServer("ws://127.0.0.1:8585");
+    MainWindow mainWindow;
 
-    GameManager gameManager;
+    // Screen size
+    int screenWidth = mainWindow.screen()->geometry().width(), screenHeight = mainWindow.screen()->geometry().height();
 
-    QObject::connect(&webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, &gameManager, &GameManager::processSocketMessage);
-    QObject::connect(&gameManager, &GameManager::newMessageReadyToSend, &webSocketHandler, &WebSocketHandler::sendMessageToServer);
+    // Main Window size and position
+    int MainWindowX = (screenWidth / 2) - (mainWindow.geometry().width() / 2), mainWindowY = (screenHeight / 2) - (mainWindow.geometry().height() / 2);
+    int mainWindowWidth = 1200, mainWindowHeight = 675;
+    mainWindow.setGeometry(MainWindowX, mainWindowY, mainWindowWidth, mainWindowHeight);
 
-    MainWindow mainWindow(&gameManager);
     mainWindow.setStyleSheet(getStyleSheet());
-
-    // Moves the window to the center of the screen
-    int screenWidth = mainWindow.screen()->geometry().width();
-    int screenHeight = mainWindow.screen()->geometry().height();
-    mainWindow.move((screenWidth / 2) - (mainWindow.geometry().width() / 2),
-           (screenHeight / 2) - (mainWindow.geometry().height() / 2));
-
     mainWindow.show();
 
     return a.exec();

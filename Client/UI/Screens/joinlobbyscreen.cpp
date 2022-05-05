@@ -1,7 +1,7 @@
 #include "joinlobbyscreen.h"
 
-JoinLobbyScreen::JoinLobbyScreen(GameManager *gameManager, QWidget *parent)
-    : Screen{parent}, gameManager(gameManager) {
+JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
+    : Screen{parent} {
     // Instruction label
     label = new CustomLabel("Lobby Code", this);
 
@@ -13,7 +13,7 @@ JoinLobbyScreen::JoinLobbyScreen(GameManager *gameManager, QWidget *parent)
 
     // Back Button
     backButton = new QPushButton("Back", this);
-    connect(backButton, &QPushButton::clicked, this, &JoinLobbyScreen::onBackButtonClicked);
+    connect(backButton, &QPushButton::clicked, this, &Screen::backRequest);
 
     // Join Button
     joinButton = new QPushButton("Join Lobby", this);
@@ -50,25 +50,13 @@ void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     joinButton->setGeometry(joinButtonX, joinButtonY, joinButtonWidth, joinButtonHeight);
 }
 
-void JoinLobbyScreen::onBackButtonClicked() {
-    onScreenChanged();
-    emit screenChanged("SelectionScreen");
-}
-
 void JoinLobbyScreen::onJoinButtonClicked() {
-    QString lobbyID = QString();
-    lobbyID = lobbyIDInputEdit->text();
+    QString newLobbyID = QString();
+    newLobbyID = lobbyIDInputEdit->text();
 
-    qDebug() << lobbyID;
+    qDebug() << newLobbyID;
 
-    if (lobbyID.length() == 4) {
-        gameManager->joinLobbyRequest(lobbyID);
-        onScreenChanged();
-        emit screenChanged("LobbyScreen");
+    if (newLobbyID.length() == 4) {
+        emit sendRequestMessage("type:joinLobbyRequest;payLoad:" + newLobbyID);
     }
-}
-
-void JoinLobbyScreen::onLobbyIDChanged(QString newLobbyID) {
-    onScreenChanged();
-    emit screenChanged("LobbyScreen:" + newLobbyID);
 }

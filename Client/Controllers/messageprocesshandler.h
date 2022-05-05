@@ -10,14 +10,24 @@ class MessageProcessHandler : public QObject {
 public:
     explicit MessageProcessHandler(QObject *parent = nullptr);
 
-    void processMessage(QString message);
-    QString getMessageData(QStringList messageSeparated, QString dataIdentifier);
+    QString getMessageData(QString message, QString dataIdentifier);
+
+public slots:
+    void processSocketMessage(QString message);
+    void processScreenMessage(QString message);
 
 signals:
+    // Socket related signals
     void uniqueIDRegistration(QString uniqueID);
     void newLobby(QString lobbyID, QStringList clientList);
     void lobbyListUpdated(QStringList clientList);
-    void newLobbyMessage(QString message);
+    void newLobbyMessageRecieved(QString message);
+
+    // Screen related signals
+    void createLobbyRequest();
+    void joinLobbyRequest(QString newLobbyID);
+    void sendLobbyMessageRequest(QString message);
+    void displayScreenRequest(QString destinationScreen);
 };
 
 #endif // MESSAGEPROCESSHANDLER_H

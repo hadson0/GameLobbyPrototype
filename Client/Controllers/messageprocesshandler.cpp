@@ -4,8 +4,13 @@ MessageProcessHandler::MessageProcessHandler(QObject *parent)
     : QObject{parent} {}
 
 // Extracts the data from the message and returns it
-QString MessageProcessHandler::getMessageData(QStringList messageSeparated, QString dataIdentifier) {
-    for(QString &message : messageSeparated) {
+QString MessageProcessHandler::getMessageData(QString message, QString dataIdentifier) {
+    // Separates the message
+    QRegularExpression separator;
+    separator.setPattern(";");
+
+    // Searches for the data and returns it;
+    for (QString &message : message.split(separator)) {
         if (message.contains(dataIdentifier))
             return message.remove(dataIdentifier + ":");
     }
@@ -14,35 +19,29 @@ QString MessageProcessHandler::getMessageData(QStringList messageSeparated, QStr
     return QString();
 }
 
-void MessageProcessHandler::processMessage(QString message) {
-    qDebug() << "Client App: Message to process: " << message;
+void MessageProcessHandler::processSocketMessage(QString message) {
+    // qDebug() << "Client App: Message to process: " << message;
 
-    // Separates the message
-    QRegularExpression separator;
-    separator.setPattern(";");
-    QStringList separated = message.split(separator);
-    separator.setPattern(",");
+    static QRegularExpression separator(",");
 
-    QString type = getMessageData(separated, "type");
-    QString clientID = QString();
-    QString lobbyID = QString();       
+    QString type = getMessageData(message, "type");
+    QString clientID = QString(), lobbyID = QString(), senderID = QString(), lobbyMessage = QString();
     QStringList clientList = QStringList();
-    QString lobbyMessage = QString();
-    QString senderID = QString();
 
-    //type:uniqueId;payLoad:1234
+    // type:uniqueId;payLoad:1234
     if (type == "uniqueID") {
-        qDebug() << "Client App: unique ID registration";
 
-        clientID = getMessageData(separated, "payLoad");
-        if (!clientID.isEmpty())
-            emit uniqueIDRegistration(clientID);        
+        clientID = getMessageData(message, "payLoad");
+        if (!clientID.isEmpty()) {
+            qDebug() << "Client App: unique ID received " << clientID;
+            emit uniqueIDRegistration(clientID);
+        }
     }
 
-    //type:newLobbyCreated;payLoad:1234;clientList:4312,856,5678
+    // type:newLobbyCreated;payLoad:1234;clientList:4312,856,5678
     else if (type == "newLobbyCreated" || type == "joinSuccess") {
-        lobbyID = getMessageData(separated, "payLoad");
-        QString clientListString = getMessageData(separated, "clientList");
+        lobbyID = getMessageData(message, "payLoad");
+        QString clientListString = getMessageData(message, "clientList");
         clientList = clientListString.split(separator);
 
         qDebug() << "Client App: Clients in lobby: " << clientListString;
@@ -51,26 +50,52 @@ void MessageProcessHandler::processMessage(QString message) {
             emit newLobby(lobbyID, clientList);
     }
 
-    //type:updatedClientList;payLoad:1234,5678,4444
+    // type:updatedClientList;payLoad:1234,5678,4444
     else if (type == "updatedClientList") {
         qDebug() << "Client App: Received updated client list";
 
-        clientList = getMessageData(separated, "payLoad").split(separator);;
+        clientList = getMessageData(message, "payLoad").split(message);;
 
         if (!clientList.isEmpty())
             emit lobbyListUpdated(clientList);
     }
 
-    //type:lobbyMessage;payLoad:HelloWorld;senderID:1234
+    // type:lobbyMessage;payLoad:HelloWorld;senderID:1234
     else if (type == "lobbyMessage") {
         qDebug() << "Client App: New lobby message received";
 
-        lobbyMessage = getMessageData(separated, "payLoad");
-        senderID = getMessageData(separated, "senderID");
-
-        QString displayMessage = senderID + ": " + lobbyMessage;
+        lobbyMessage = getMessageData(message, "payLoad");
+        senderID = getMessageData(message, "senderID");
 
         if (!lobbyMessage.isEmpty() && !senderID.isEmpty())
-            emit newLobbyMessage(displayMessage);
+            emit newLobbyMessageRecieved(senderID + ": " + lobbyMessage);
+    }
+}
+
+void MessageProcessHandler::processScreenMessage(QString message) {
+    QString type = getMessageData(message, "type");
+    QString newLobbyID = QString(), lobbyMessage = QString();
+
+    // type:createLobbyRequest;payload:0`
+    if (type == "createLobbyRequest") {
+        emit createLobbyRequest();
+    }
+
+    // type:joinLobbyRequest;payLoad:1234
+    else if (type == "joinLobbyRequest") {
+        qDebug() << "Client App: New lobby message received";
+
+        newLobbyID = getMessageData(message, "payLoad");
+        if (!newLobbyID.isEmpty())
+            emit joinLobbyRequest(newLobbyID);
+    }
+
+    // type:sendLobbyMessageRequest;payload:" + message
+    else if (type == "sendLobbyMessageRequest") {
+        qDebug() << "Client App: New lobby message received";
+
+        lobbyMessage = getMessageData(message, "payLoad");
+        if (!lobbyMessage.isEmpty())
+            emit sendLobbyMessageRequest(lobbyMessage);
     }
 }

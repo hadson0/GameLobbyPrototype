@@ -1,50 +1,84 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(GameManager *gameManager, QWidget *parent)
-    : QMainWindow(parent), gameManager(gameManager) {
-    // Set window proprieties    
-    this->setFixedSize(width, height);
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent) {
     setWindowTitle("Game Lobby Prototype");
 
-    displayScreen("MainMenuScreen");
+    lobbyScreen = nullptr;
+
+    gameManager = new GameManager;
+
+    // Creates a Web Socket Handler and connects it to the server
+    webSocketHandler = new WebSocketHandler(this);
+    webSocketHandler->connectToServer("ws://127.0.0.1:8585");
+
+    // Connects the Web Socket Handler to the Game Manager and to this screen
+    connect(webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, gameManager, &GameManager::processSocketMessage);    
+    connect(gameManager, &GameManager::newMessageReadyToSend, webSocketHandler, &WebSocketHandler::sendMessageToServer);
+    connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);
+
+    displayMenuScreen("MainMenuScreen");
 }
 
-void MainWindow::displayScreen(QString destinationScreen) {
+// Hides the old screen and display the one mentioned in the argument
+void MainWindow::displayMenuScreen(QString destinationMenuScreen) {
     Screen *newScreen = nullptr;
 
-    // Creates the screen, according to its class, and connects it
-    if (destinationScreen == "MainMenuScreen") {
+    if (destinationMenuScreen == "MainMenuScreen")
         newScreen = new MainMenuScreen(this);
-        connect(newScreen, &MainMenuScreen::screenChanged, this, &MainWindow::displayScreen);
-    }
-    else if (destinationScreen == "SelectionScreen") {
-        newScreen = new SelectionScreen(gameManager, this);
-        connect(newScreen, &SelectionScreen::screenChanged, this, &MainWindow::displayScreen);
-    }
-    else if (destinationScreen == "JoinLobbyScreen") {
-        newScreen = new JoinLobbyScreen(gameManager, this);
-        connect(newScreen, &JoinLobbyScreen::screenChanged, this, &MainWindow::displayScreen);
-    }
-    else if (destinationScreen.contains("LobbyScreen:")) {
-        QString lobbyID = destinationScreen.remove("LobbyScreen:");
+    else if (destinationMenuScreen == "SelectionScreen")
+        newScreen = new SelectionScreen(this);
+    else if (destinationMenuScreen == "JoinLobbyScreen")
+        newScreen = new JoinLobbyScreen(this);
 
-        if (!lobbyID.isEmpty()) {
-            newScreen = new LobbyScreen(lobbyID, gameManager, this);
-            connect(newScreen, &LobbyScreen::screenChanged, this, &MainWindow::displayScreen);
-        }
-    }
-
-    // If the screen was created, displays the screen
+    // If the screen was created successfully, deletes the old screen and displays the current one
     if (newScreen != nullptr) {
-        if (destinationScreen.contains("LobbyScreen:")) {
-            lobbyScreen = newScreen;
-            lobbyScreen->show();
-        } else {
-            currentMenuScreen = newScreen;
-            currentMenuScreen->show();
-        }
-    } else {
-        qDebug() << "Error while navigating through the screens. Destination: " + destinationScreen;
+        connect(newScreen, &Screen::backRequest, this, &MainWindow::onBackRequested);
+        connect(newScreen, &Screen::quitApplicationRequest, this, &MainWindow::onQuitApplicationRequested);
+        connect(newScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
+        connect(newScreen, &Screen::displayMenuScreenRequest, this, &MainWindow::displayMenuScreen);
+
+        if (!menuScreenStack.isEmpty())
+            menuScreenStack.top()->hide();
+
+        menuScreenStack.push(newScreen);
+        menuScreenStack.top()->show();
     }
+    else
+        qDebug() << "Error while displaying the screen: " + destinationMenuScreen;
+
 }
+
+// Creates the lobby screen and connects it
+void MainWindow::displayLobbyScreen(QString lobbyID) {
+    lobbyScreen = new LobbyScreen(lobbyID, this);
+
+    connect(lobbyScreen, &Screen::backRequest, this, &MainWindow::onBackRequested);
+    connect(lobbyScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
+    connect(lobbyScreen, &Screen::displayMenuScreenRequest, this, &MainWindow::displayMenuScreen);
+    connect(gameManager, &GameManager::newLobbyMessageRecieved, lobbyScreen, &LobbyScreen::newMessageRecieved);
+
+    menuScreenStack.top()->hide();
+    lobbyScreen->show();
+}
+
+// Goes to the previous screen
+void MainWindow::onBackRequested() {
+    // Deletes the current screen
+    if (lobbyScreen != nullptr) { // If the current screen is the lobby screen
+        delete lobbyScreen;
+    } else {
+        delete menuScreenStack.top();
+        menuScreenStack.pop();
+    }
+
+    // Shows the previous screen
+    menuScreenStack.top()->show();
+}
+
+// Quits the application
+void MainWindow::onQuitApplicationRequested() {
+    QApplication::quit();
+}
+
 

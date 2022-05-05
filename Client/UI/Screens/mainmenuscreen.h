@@ -2,10 +2,7 @@
 #define MAINMENUSCREEN_H
 
 #include <QPushButton>
-#include <QApplication>
 #include <QLabel>
-#include <QPainter>
-#include <QPushButton>
 
 #include "screen.h"
 #include "UI/Components/customlabel.h"
@@ -23,7 +20,6 @@ public:
 
 public slots:
     void onPlayButtonPressed();
-    void onQuitButtonPressed();
 };
 
 #endif // MAINMENUSCREEN_H
