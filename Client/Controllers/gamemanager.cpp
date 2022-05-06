@@ -46,7 +46,11 @@ void GameManager::setLobbyID(QString newLobbyID) {
     // This if statement prevents an unecessary signal emission
     if (lobbyID != newLobbyID) {
         lobbyID = newLobbyID;
-        emit lobbyIDChanged(newLobbyID);
+
+        if (lobbyID.isEmpty())
+            emit lobbyLeft();
+        else
+            emit lobbyIDChanged(newLobbyID);
     }
 }
 

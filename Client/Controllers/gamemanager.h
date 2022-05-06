@@ -39,6 +39,7 @@ signals:
     void processScreenMessage(QString message);
 
     void lobbyIDChanged(QString newLobbyID);
+    void lobbyLeft();
     void clientsInLobbyChanged();
 
     void inGameLobby();
