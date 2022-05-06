@@ -2,6 +2,9 @@
 
 JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
     : Screen{parent} {
+    setPadding(25);
+    setSpacing(25);
+
     // Instruction label
     label = new CustomLabel("Lobby Code", this);
 
@@ -9,7 +12,7 @@ JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
     lobbyIDInputEdit = new CustomLineEdit(this);
     lobbyIDInputEdit->setValidator(new QIntValidator(0, 9999, this));
     lobbyIDInputEdit->setAlignment(Qt::AlignCenter);
-    connect(lobbyIDInputEdit, &CustomLineEdit::onEnterPressed, this, &JoinLobbyScreen::onJoinButtonClicked);
+    connect(lobbyIDInputEdit, &QLineEdit::returnPressed, this, &JoinLobbyScreen::onJoinButtonClicked);
 
     // Back Button
     backButton = new QPushButton("Back", this);
@@ -22,31 +25,32 @@ JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
 
 void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
-    int spacing = 25;
+
+    int avaliableWidht = this->width() - 2 * padding, avaliableHeight = this->height() - 2 * padding;
+
+    // Back Button
+    int backButtonX = padding, backButtonY = padding;
+    int backButtonWidth = avaliableWidht * 0.08, backButtonHeight = avaliableHeight * 0.08;
+    backButton->setGeometry(backButtonX, backButtonY, backButtonWidth, backButtonHeight);
 
     // Lobby ID Input
-    int inputWidth = this->width() * 0.5, inputHeight = this->height() * 0.2;
+    int inputWidth = avaliableWidht * 0.5, inputHeight = avaliableHeight * 0.2;
     int fontSize = inputHeight * 0.85;
-    int inputX = (this->width() / 2) - (inputWidth / 2), inputY = (this->height() / 2) - (inputHeight / 2);
+    int inputX = (avaliableWidht / 2) - (inputWidth / 2), inputY = (avaliableHeight / 2) - (inputHeight / 2);
     lobbyIDInputEdit->setGeometry(inputX, inputY, inputWidth, inputHeight);
     QFont font = lobbyIDInputEdit->font();
     font.setPixelSize(fontSize);
     lobbyIDInputEdit->setFont(font);
 
     // Instruction label
-    int labelWidth = this->width(), labelHeight = this->height() * 0.10;
-    int labelX = 0, labelY = this->height()/2 - spacing - labelHeight - (inputHeight / 2);
+    int labelWidth = avaliableWidht, labelHeight = avaliableHeight * 0.10;
+    int labelX = 0, labelY = avaliableHeight/2 - spacing - labelHeight - (inputHeight / 2);
     label->setFontSize(labelHeight * 0.85);
     label->setGeometry(labelX, labelY, labelWidth, labelHeight);
 
-    // Back Button
-    int backButtonWidth = this->width() * 0, backButtonHeight = 0;
-    int backButtonX = 0, backButtonY = 0;
-    backButton->setGeometry(backButtonX, backButtonY, backButtonWidth, backButtonHeight);
-
     // Join Button
-    int joinButtonWidth = this->width() * 0.2, joinButtonHeight = this->height() * 0.1;
-    int joinButtonX =  (this->width() / 2) - (joinButtonWidth / 2), joinButtonY = inputY + inputHeight + spacing;
+    int joinButtonWidth = avaliableWidht * 0.2, joinButtonHeight = avaliableHeight * 0.1;
+    int joinButtonX =  (avaliableWidht / 2) - (joinButtonWidth / 2), joinButtonY = inputY + inputHeight + spacing;
     joinButton->setGeometry(joinButtonX, joinButtonY, joinButtonWidth, joinButtonHeight);
 }
 

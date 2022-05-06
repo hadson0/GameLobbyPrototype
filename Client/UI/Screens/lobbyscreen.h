@@ -11,8 +11,7 @@
 class LobbyScreen : public Screen {
     Q_OBJECT
 
-    int padding;
-
+    QPushButton *backButton;
     CustomLabel *lobbyIDLabel;
     ClientListView *clientListView;
     ChatFrame *chatFrame;
