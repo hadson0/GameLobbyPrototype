@@ -49,5 +49,5 @@ void LobbyScreen::resizeEvent(QResizeEvent *event) {
 
 
 void LobbyScreen::requestSendLobbyMessage(QString message) {
-    emit sendRequestMessage("type:sendLobbyMessageRequest;payload:" + message);
+    emit sendRequestMessage("type:sendLobbyMessageRequest;payLoad:" + message);
 }

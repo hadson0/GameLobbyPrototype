@@ -62,13 +62,16 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
     // type:lobbyMessage;payLoad:HelloWorld;senderID:1234
     else if (type == "lobbyMessage") {
-        qDebug() << "Client App: New lobby message received";
 
         lobbyMessage = getMessageData(message, "payLoad");
         senderID = getMessageData(message, "senderID");
 
-        if (!lobbyMessage.isEmpty() && !senderID.isEmpty())
-            emit newLobbyMessageRecieved(senderID + ": " + lobbyMessage);
+        if (!lobbyMessage.isEmpty() && !senderID.isEmpty()) {
+            QString displayMessage = senderID + ": " + lobbyMessage;
+
+            qDebug() << "Client App: New lobby message received";
+            emit newLobbyMessageRecieved(displayMessage);
+        }
     }
 }
 
@@ -83,8 +86,6 @@ void MessageProcessHandler::processScreenMessage(QString message) {
 
     // type:joinLobbyRequest;payLoad:1234
     else if (type == "joinLobbyRequest") {
-        qDebug() << "Client App: New lobby message received";
-
         newLobbyID = getMessageData(message, "payLoad");
         if (!newLobbyID.isEmpty())
             emit joinLobbyRequest(newLobbyID);
@@ -92,8 +93,6 @@ void MessageProcessHandler::processScreenMessage(QString message) {
 
     // type:sendLobbyMessageRequest;payload:" + message
     else if (type == "sendLobbyMessageRequest") {
-        qDebug() << "Client App: New lobby message received";
-
         lobbyMessage = getMessageData(message, "payLoad");
         if (!lobbyMessage.isEmpty())
             emit sendLobbyMessageRequest(lobbyMessage);
