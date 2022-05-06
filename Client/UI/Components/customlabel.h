@@ -6,11 +6,15 @@
 class CustomLabel : public QLabel {
     Q_OBJECT
 
-    QFont fontAux; // Auxiliar variable to manage the label text font
+    QFont auxFont; // Auxiliar variable to manage the label text font
 
 public:
     explicit CustomLabel(QString text = QString(), QWidget *parent = nullptr);
 
+    // Getters
+    int getFontSize();
+
+    // Setters
     void setFontSize(int size);
 };
 

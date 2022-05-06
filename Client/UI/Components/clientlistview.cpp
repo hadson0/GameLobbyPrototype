@@ -3,5 +3,4 @@
 ClientListView::ClientListView(QWidget *parent)
     : BackgroundedFrame{parent} {
     clientWidgetList = new QListWidget(this);
-
 }

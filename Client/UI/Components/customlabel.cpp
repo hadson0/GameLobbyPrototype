@@ -7,8 +7,13 @@ CustomLabel::CustomLabel(QString text, QWidget *parent)
 }
 
 void CustomLabel::setFontSize(int size) {
-    fontAux = this->font();
-    fontAux.setPixelSize(size);
-    this->setFont(fontAux);
-    fontAux.setPixelSize(size);
+    auxFont = this->font();
+    auxFont.setPixelSize(size);
+    this->setFont(auxFont);
+    auxFont.setPixelSize(size);
+}
+
+int CustomLabel::getFontSize() {
+    auxFont = this->font();
+    return auxFont.pixelSize();
 }

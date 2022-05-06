@@ -9,7 +9,22 @@ class Screen : public QFrame {
 
 public:
     Screen(QWidget *parent);
-    ~Screen();
+    ~Screen();    
+
+    // Getters
+    QColor getBackgroundColor();
+    int getBorderRadius();
+    int getPadding();
+    int getSpacing();
+
+    // Setters
+    void setBackgroundColor(QColor color);
+    void setBorderRadius(int borderRadius);
+    void setPadding(int padding);
+    void setSpacing(int spacing);
+
+protected:
+    int padding, spacing;
 
 signals:
     void sendRequestMessage(QString requestMessage);

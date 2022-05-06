@@ -3,7 +3,9 @@
 #include <QDebug>
 
 ChatFrame::ChatFrame(QWidget *parent)
-    : BackgroundedFrame{parent}, margin(10) {
+    : BackgroundedFrame{parent} {
+    setPadding(10);
+
     // Chat View
     chatView = new CustomTextEdit(this);
     chatView->setReadOnly(true);
@@ -32,21 +34,21 @@ void ChatFrame::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
 
     // Avaliable size
-    int avaliableHeight = this->height() - 3 * margin, avaliableWidth = this->width() - 2 * margin;
+    int avaliableHeight = this->height() - 3 * getPadding(), avaliableWidth = this->width() - 2 * getPadding();
 
     // Chat View
-    int chatViewX = margin, chatViewY = margin;
+    int chatViewX = getPadding(), chatViewY = getPadding();
     int chatViewWidht = avaliableWidth, chatViewHeight = avaliableHeight * 0.9;
     chatView->setGeometry(chatViewX, chatViewY, chatViewWidht, chatViewHeight);
 
     // Chat Input
-    int chatInputX = margin, chatInputY = chatViewHeight + 2 * margin;
+    int chatInputX = getPadding(), chatInputY = chatViewHeight + 2 * getPadding();
     int chatInputWidht = avaliableWidth * 0.9, chatInputHeight = avaliableHeight - chatViewHeight;
     chatInput->setGeometry(chatInputX, chatInputY, chatInputWidht, chatInputHeight);
 
     // Send Message Button
-    int buttonX = chatInputWidht + 2 * margin, buttonY = chatInputY;
-    int buttonWidth = avaliableWidth - chatInputWidht - margin, buttonHeight = chatInputHeight;
+    int buttonX = chatInputWidht + 2 * getPadding(), buttonY = chatInputY;
+    int buttonWidth = avaliableWidth - chatInputWidht - getPadding(), buttonHeight = chatInputHeight;
     sendMessageButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
 }
 

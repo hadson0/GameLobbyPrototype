@@ -9,3 +9,19 @@ Screen::Screen(QWidget *parent)
 Screen::~Screen(){
     this->hide();
 }
+
+int Screen::getPadding() {
+    return padding;
+}
+
+int Screen::getSpacing() {
+    return spacing;
+}
+
+void Screen::setPadding(int padding) {
+    this->padding = padding;
+}
+
+void Screen::setSpacing(int spacing) {
+    this->spacing = spacing;
+}

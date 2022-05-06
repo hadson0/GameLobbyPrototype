@@ -56,6 +56,7 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
     connect(lobbyScreen, &Screen::backRequest, this, &MainWindow::onBackRequested);
     connect(lobbyScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
     connect(lobbyScreen, &Screen::displayMenuScreenRequest, this, &MainWindow::displayMenuScreen);
+    connect(gameManager, &GameManager::lobbyLeft, this, &MainWindow::onBackRequested);
     connect(gameManager, &GameManager::newLobbyMessageRecieved, lobbyScreen, &LobbyScreen::newMessageRecieved);
 
     menuScreenStack.top()->hide();

@@ -10,7 +10,6 @@
 class ChatFrame : public BackgroundedFrame {
     Q_OBJECT
 
-    int margin;
     void resizeEvent(QResizeEvent *event);
 
 public:
