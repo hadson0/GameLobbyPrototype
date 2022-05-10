@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     // Main Window size and position
     int MainWindowX = (screenWidth / 2) - (mainWindow.geometry().width() / 2), mainWindowY = (screenHeight / 2) - (mainWindow.geometry().height() / 2);
     int mainWindowWidth = 1200, mainWindowHeight = 675;
-    mainWindow.setGeometry(mainWindowWidth, mainWindowHeight, MainWindowX, mainWindowY);
+    mainWindow.setGeometry(MainWindowX, mainWindowY,mainWindowWidth, mainWindowHeight);
 
     mainWindow.setStyleSheet(getStyleSheet());
     mainWindow.displayMenuScreen("MainMenuScreen");
