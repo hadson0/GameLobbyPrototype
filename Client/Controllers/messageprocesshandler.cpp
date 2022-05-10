@@ -54,7 +54,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
     else if (type == "updatedClientList") {
         qDebug() << "Client App: Received updated client list";
 
-        clientList = getMessageData(message, "payLoad").split(message);;
+        clientList = getMessageData(message, "payLoad").split(separator);
 
         if (!clientList.isEmpty())
             emit lobbyListUpdated(clientList);
