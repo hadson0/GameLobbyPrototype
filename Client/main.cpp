@@ -16,10 +16,10 @@ int main(int argc, char *argv[]) {
     // Main Window size and position
     int MainWindowX = (screenWidth / 2) - (mainWindow.geometry().width() / 2), mainWindowY = (screenHeight / 2) - (mainWindow.geometry().height() / 2);
     int mainWindowWidth = 1200, mainWindowHeight = 675;
-    mainWindow.setFixedSize(mainWindowWidth, mainWindowHeight);
-    mainWindow.move(MainWindowX, mainWindowY);
+    mainWindow.setGeometry(mainWindowWidth, mainWindowHeight, MainWindowX, mainWindowY);
 
     mainWindow.setStyleSheet(getStyleSheet());
+    mainWindow.displayMenuScreen("MainMenuScreen");
     mainWindow.show();
 
     return a.exec();
@@ -40,7 +40,7 @@ const QString getStyleSheet() {
                 "background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #6C14A8, stop:1 #6A4BE4);"
             "}"
 
-            "QLabel {"
+            "QLabel { "
                 "color: white;"
                 "font-weight: bold;"
                 "text-align: center"
@@ -67,6 +67,11 @@ const QString getStyleSheet() {
             "QLineEdit {"
                 "background-color: #E3DDF0; border-radius: " + QString::number(borderRadius) + "px;"
                 "padding: 5px;"
+                "color: #110C5A;"
+            "}"
+
+            "QListWidget {"
+                "background-color: #E3DDF0; border-radius: " + QString::number(borderRadius) + "px;"
                 "color: #110C5A;"
             "}"
 

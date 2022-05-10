@@ -16,8 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, gameManager, &GameManager::processSocketMessage);    
     connect(gameManager, &GameManager::newMessageReadyToSend, webSocketHandler, &WebSocketHandler::sendMessageToServer);
     connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);
-
-    displayMenuScreen("MainMenuScreen");
 }
 
 // Hides the old screen and display the one mentioned in the argument
