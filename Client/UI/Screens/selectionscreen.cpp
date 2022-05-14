@@ -6,45 +6,41 @@ SelectionScreen::SelectionScreen(QWidget *parent)
     label = new CustomLabel("Game Lobby Prototype", this);
 
     // Create Lobby Button
-    createLobbyButton = new QPushButton("Create Lobby", this);
+    createLobbyButton = new CustomPushButton("Create Lobby", this);
     connect(createLobbyButton, &QPushButton::clicked, this, &SelectionScreen::onCreateLobbyCklicked);
 
     // Join Lobby Button
-    joinLobbyButton = new QPushButton("Join Lobby", this);    
+    joinLobbyButton = new CustomPushButton("Join Lobby", this);
     connect(joinLobbyButton, &QPushButton::clicked, this, &SelectionScreen::onJoinLobbyButtonClicked);
 
     // Back Button
-    backButton = new QPushButton("Back", this);
+    backButton = new CustomPushButton("Back", this);
     connect(backButton, &QPushButton::clicked, this, &Screen::backRequest);
 }
 
 void SelectionScreen::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
 
-    // Label proprieties
-    int spacing = this->height() * 0.15;
-    int labelWidth = this->width(), labelHeight = this->height() * 0.10;
-    int labelX = 0, labelY = this->height()/2 - spacing - labelHeight;
+    this->setSpacing(this->height() * 0.015);
 
-    // Game Title Label
-    label->setFontSize(labelHeight * 0.85);
+    // Label proprieties
+    int labelWidth = this->width(), labelHeight = this->height() * 0.13;
+    int labelX = 0, labelY = this->height() / 4 - labelHeight / 2;
     label->setGeometry(labelX, labelY, labelWidth, labelHeight);
 
     // Button proprieties
-    spacing = this->height() * 0.015;
-    int buttonWidth = this->width()/3, buttonHeight = this->height() * 0.15;
-    int buttonX = (this->width()/2) - (buttonWidth/2);
-    int buttonY = (this->height()/2);
+    int buttonWidth = this->width() / 3, buttonHeight = this->height() * 0.15;
+    int buttonX = (this->width() - buttonWidth) / 2, buttonY = this->height() / 2;
 
     // Create Lobby Button
     createLobbyButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
 
     // Join Lobby Button
-    buttonY += buttonHeight + spacing;
+    buttonY += buttonHeight + this->getSpacing();
     joinLobbyButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
 
     // Back Button
-    buttonY += buttonHeight + spacing;
+    buttonY += buttonHeight + this->getSpacing();
     backButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
 }
 

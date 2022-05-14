@@ -7,12 +7,16 @@
 class Screen : public QFrame {
     Q_OBJECT
 
+    QSize avaliableSize;
+    int padding, spacing;
+
 public:
     Screen(QWidget *parent);
     ~Screen();    
 
     // Getters
-    QColor getBackgroundColor();
+    int getAvaliableWidth();
+    int getAvaliableHeight();
     int getBorderRadius();
     int getPadding();
     int getSpacing();
@@ -23,8 +27,8 @@ public:
     void setPadding(int padding);
     void setSpacing(int spacing);
 
-protected:
-    int padding, spacing;
+    // Methods
+    void updateAvaliableSize();
 
 signals:
     void sendRequestMessage(QString requestMessage);

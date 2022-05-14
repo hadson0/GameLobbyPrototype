@@ -8,6 +8,8 @@ class CustomLabel : public QLabel {
 
     QFont auxFont; // Auxiliar variable to manage the label text font
 
+    void resizeEvent(QResizeEvent *event);
+
 public:
     explicit CustomLabel(QString text = QString(), QWidget *parent = nullptr);
 

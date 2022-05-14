@@ -15,7 +15,7 @@ public:
     explicit CustomTextEdit(QWidget *parent = nullptr);
 
 signals:
-    void onEnterPressed();
+    void enterPressed();
 };
 
 #endif // CUSTOMTEXTEDIT_H

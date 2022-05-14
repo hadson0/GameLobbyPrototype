@@ -10,13 +10,9 @@ int main(int argc, char *argv[]) {
 
     MainWindow mainWindow;
 
-    // Screen size
-    int screenWidth = mainWindow.screen()->geometry().width(), screenHeight = mainWindow.screen()->geometry().height();
-
     // Main Window size and position
-    int MainWindowX = (screenWidth / 2) - (mainWindow.geometry().width() / 2), mainWindowY = (screenHeight / 2) - (mainWindow.geometry().height() / 2);
     int mainWindowWidth = 1200, mainWindowHeight = 675;
-    mainWindow.setGeometry(MainWindowX, mainWindowY,mainWindowWidth, mainWindowHeight);
+    mainWindow.setFixedSize(mainWindowWidth, mainWindowHeight);
 
     mainWindow.setStyleSheet(getStyleSheet());
     mainWindow.displayMenuScreen("MainMenuScreen");
@@ -32,48 +28,18 @@ const QString getStyleSheet() {
         and it wouldn't be very organized to leave at the beginning of the code.
         There are more solutions, one of them would be to read it from a file, but I preferred to do it this way because it's simpler
     **/
-    const int borderRadius = 15;
     const QString styleSheet =
             "QMainWindow {"
                 "color: qlineargradient(spread:pad, x1:0 y1:1, x2:1 y2:0,"
                 "stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));"
-                "background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #6C14A8, stop:1 #6A4BE4);"
-            "}"
-
-            "QLabel { "
-                "color: white;"
-                "font-weight: bold;"
-                "text-align: center"
-            "}"
-
-            "QPushButton {"
-                "background-color: white; "
-                "border-radius: " + QString::number(borderRadius) + "px; "
-                "border: 2px solid #110C5A;"
-                "color: #110C5A;"
-                "font-weight: bold;"
-            "}"            
-            "QPushButton:pressed {"
-                "background-color: #CABFE0;"
-            "}"
-
-            "QTextEdit {"
-                "background-color: #E3DDF0; border-radius: " + QString::number(borderRadius) + "px;"
-                "padding: 5px;"
-                "color: #110C5A;"
-                "font-size: 20px"
+                "background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #7d20bd, stop:1 #8165f0);"
             "}"
 
             "QLineEdit {"
-                "background-color: #E3DDF0; border-radius: " + QString::number(borderRadius) + "px;"
+                "background-color: #E3DDF0; border-radius: 15px;"
                 "padding: 5px;"
                 "color: #110C5A;"
-            "}"
-
-            "QListWidget {"
-                "background-color: #E3DDF0; border-radius: " + QString::number(borderRadius) + "px;"
-                "color: #110C5A;"
-            "}"
+            "}"            
 
             "QScrollBar {"
                 "border: none;"

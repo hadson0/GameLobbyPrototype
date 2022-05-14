@@ -7,11 +7,12 @@
 #include "UI/Components/clientlistview.h"
 #include "UI/Components/chatframe.h"
 #include "UI/Components/customlabel.h"
+#include "UI/Components/custompushbutton.h"
 
 class LobbyScreen : public Screen {
     Q_OBJECT
 
-    QPushButton *backButton;
+    CustomPushButton *backButton, *readyButton;
     CustomLabel *lobbyIDLabel;
     ClientListView *clientListView;
     ChatFrame *chatFrame;
@@ -27,6 +28,7 @@ public slots:
 
 signals:
     void newMessageRecieved(QString message);
+    void clientListChanged(QStringList clientLsit);
 };
 
 #endif // LOBBYSCREEN_H

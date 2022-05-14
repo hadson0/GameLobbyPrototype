@@ -5,14 +5,19 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
     setPadding(25);
 
     // Back Button
-    backButton = new QPushButton("Back", this);
+    backButton = new CustomPushButton("Back", this);
     connect(backButton, &QPushButton::clicked, this, &Screen::backRequest);
+
+    // Ready Button
+    readyButton = new CustomPushButton("Ready", this);
+    //connect(readyButton, &QPushButton::clicked, this, &Screen::backRequest);
 
     // Lobby ID Label    
     lobbyIDLabel = new CustomLabel("Lobby Code: " + lobbyID, this);
 
     // Client List View
     clientListView = new ClientListView(this);
+    connect(this, &LobbyScreen::clientListChanged, clientListView, &ClientListView::onClientListChanged);
 
     // Chat Frame
     chatFrame = new ChatFrame(this);
@@ -23,27 +28,29 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
 void LobbyScreen::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
 
-    int avaliableWidht = this->width() - 2 * padding, avaliableHeight = this->height() - 2 * padding;
-
     // Back Button
-    int backButtonX = padding, backButtonY = padding;
-    int backButtonWidth = avaliableWidht * 0.08, backButtonHeight = avaliableHeight * 0.08;
+    int backButtonX = this->getPadding(), backButtonY = this->getPadding();
+    int backButtonWidth = this->getAvaliableWidth() * 0.08, backButtonHeight = this->getAvaliableHeight() * 0.08;
     backButton->setGeometry(backButtonX, backButtonY, backButtonWidth, backButtonHeight);
+
+    // Ready Button
+    int readyButtonWidth = backButtonWidth, readyButtonHeight = backButtonHeight;
+    int readyButtonX = this->getAvaliableWidth() - readyButtonWidth, readyButtonY = this->getPadding();
+    readyButton->setGeometry(readyButtonX, readyButtonY, readyButtonWidth, readyButtonHeight);
 
     // Lobby ID Label
     int lobbyIDLabelX = backButtonX + backButtonWidth, lobbyIDLabelY = backButtonY;
-    int lobbyIDLabelWidth = avaliableWidht - lobbyIDLabelX, lobbyIDLabelHeight = backButtonHeight;
-    lobbyIDLabel->setFontSize(lobbyIDLabelHeight * 0.85);
+    int lobbyIDLabelWidth = this->getAvaliableWidth() - lobbyIDLabelX, lobbyIDLabelHeight = backButtonHeight;
     lobbyIDLabel->setGeometry(lobbyIDLabelX, lobbyIDLabelY, lobbyIDLabelWidth, lobbyIDLabelHeight);
 
     // Client List View
-    int clientListViewX = padding, clientListViewY = padding + 75;
-    int clientListViewWidth = (avaliableWidht - padding) * 0.4, clientListViewHeight = avaliableHeight - 75;
+    int clientListViewX = this->getPadding(), clientListViewY = this->getPadding() + 75;
+    int clientListViewWidth = (this->getAvaliableWidth() - this->getPadding()) * 0.4, clientListViewHeight = this->getAvaliableHeight() - 75;
     clientListView->setGeometry(clientListViewX, clientListViewY, clientListViewWidth, clientListViewHeight);
 
     // Chat Frame
-    int chatFrameX = clientListViewWidth + 2 * padding, chatFrameY = clientListViewY;
-    int chatFrameWidth = (avaliableWidht - padding) * 0.6, chatFrameHeight = clientListViewHeight;
+    int chatFrameX = clientListViewWidth + 2 * this->getPadding(), chatFrameY = clientListViewY;
+    int chatFrameWidth = (this->getAvaliableWidth() - this->getPadding()) * 0.6, chatFrameHeight = clientListViewHeight;
     chatFrame->setGeometry(chatFrameX, chatFrameY, chatFrameWidth, chatFrameHeight);
 }
 

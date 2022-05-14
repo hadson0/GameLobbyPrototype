@@ -1,17 +1,17 @@
 #ifndef MAINMENUSCREEN_H
 #define MAINMENUSCREEN_H
 
-#include <QPushButton>
 #include <QLabel>
 
 #include "screen.h"
 #include "UI/Components/customlabel.h"
+#include "UI/Components/custompushbutton.h"
 
 class MainMenuScreen : public Screen {
     Q_OBJECT
 
     CustomLabel *label;
-    QPushButton *playButton, *quitButton;
+    CustomPushButton *playButton, *quitButton;
 
     void resizeEvent(QResizeEvent *event);
 

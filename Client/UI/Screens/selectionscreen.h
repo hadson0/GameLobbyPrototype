@@ -2,10 +2,11 @@
 #define SELECTIONSCREEN_H
 
 #include <QApplication>
-#include <QPushButton>
 
 #include "screen.h"
 #include "UI/Components/customlabel.h"
+#include "UI/Components/custompushbutton.h"
+
 
 class SelectionScreen : public Screen {
     Q_OBJECT

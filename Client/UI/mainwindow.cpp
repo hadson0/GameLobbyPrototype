@@ -4,6 +4,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     setWindowTitle("Game Lobby Prototype");
 
+    // Maintains window aspect ratio
+    QSizePolicy sizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    sizePolicy.setHeightForWidth(true);
+    setSizePolicy(sizePolicy);
+
     lobbyScreen = nullptr;
 
     gameManager = new GameManager;
@@ -15,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Connects the Web Socket Handler to the Game Manager and to this screen
     connect(webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, gameManager, &GameManager::processSocketMessage);    
     connect(gameManager, &GameManager::newMessageReadyToSend, webSocketHandler, &WebSocketHandler::sendMessageToServer);
-    connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);
+    connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);    
 }
 
 // Hides the old screen and display the one mentioned in the argument
@@ -56,7 +61,9 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
     connect(lobbyScreen, &Screen::displayMenuScreenRequest, this, &MainWindow::displayMenuScreen);
 
     connect(gameManager, &GameManager::lobbyLeft, this, &MainWindow::onBackRequested);
+
     connect(gameManager, &GameManager::newLobbyMessageRecieved, lobbyScreen, &LobbyScreen::newMessageRecieved);
+    connect(gameManager, &GameManager::clientListChanged, lobbyScreen, &LobbyScreen::clientListChanged);
 
     menuScreenStack.top()->hide();
     lobbyScreen->show();
@@ -67,6 +74,7 @@ void MainWindow::onBackRequested() {
     // Deletes the current screen
     if (lobbyScreen != nullptr) { // If the current screen is the lobby screen
         delete lobbyScreen;
+        lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
     } else {
         delete menuScreenStack.top();
         menuScreenStack.pop();
