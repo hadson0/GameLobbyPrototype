@@ -11,9 +11,10 @@ SOURCES += \
     Controllers/websockethandler.cpp \
     UI/Components/backgroundedframe.cpp \
     UI/Components/chatframe.cpp \
+    UI/Components/clientlistitem.cpp \
     UI/Components/clientlistview.cpp \
     UI/Components/customlabel.cpp \
-    UI/Components/customlineedit.cpp \
+    UI/Components/custompushbutton.cpp \
     UI/Components/customtextedit.cpp \
     UI/Screens/joinlobbyscreen.cpp \
     UI/Screens/lobbyscreen.cpp \
@@ -30,9 +31,10 @@ HEADERS += \
     Controllers/websockethandler.h \
     UI/Components/backgroundedframe.h \
     UI/Components/chatframe.h \
+    UI/Components/clientlistitem.h \
     UI/Components/clientlistview.h \
     UI/Components/customlabel.h \
-    UI/Components/customlineedit.h \
+    UI/Components/custompushbutton.h \
     UI/Components/customtextedit.h \
     UI/Screens/joinlobbyscreen.h \
     UI/Screens/lobbyscreen.h \
