@@ -1,9 +1,9 @@
-#include "chatframe.h"
+﻿#include "chatframe.h"
 
 #include <QDebug>
 
-ChatFrame::ChatFrame(QWidget *parent)
-    : BackgroundedFrame{parent} {
+    ChatFrame::ChatFrame(QWidget *parent)
+        : BackgroundedFrame{parent} {
     setPadding(10);
 
     // Chat View
@@ -12,10 +12,10 @@ ChatFrame::ChatFrame(QWidget *parent)
 
     // Chat Input
     chatInput = new CustomTextEdit(this);
+    connect(chatInput, &CustomTextEdit::enterPressed, this, &ChatFrame::onSendButtonClicked);
 
     // Send Message button
-    sendMessageButton = new QPushButton("Send", this);
-    sendMessageButton->setStyleSheet("* {background-color: #E3DDF0; border: 0px;}");
+    sendMessageButton = new CustomPushButton("Send", this);
     connect(sendMessageButton, &QPushButton::clicked, this, &ChatFrame::onSendButtonClicked);
 
 }
@@ -31,24 +31,21 @@ void ChatFrame::onMessageRecieved(QString message) {
 }
 
 void ChatFrame::resizeEvent(QResizeEvent *event) {
-    Q_UNUSED(event);
-
-    // Avaliable size
-    int avaliableHeight = this->height() - 3 * getPadding(), avaliableWidth = this->width() - 2 * getPadding();
+    Q_UNUSED(event);    
 
     // Chat View
     int chatViewX = getPadding(), chatViewY = getPadding();
-    int chatViewWidht = avaliableWidth, chatViewHeight = avaliableHeight * 0.9;
+    int chatViewWidht = this->getAvaliableWidth(), chatViewHeight = (this->getAvaliableHeight()  - getPadding()) * 0.9;
     chatView->setGeometry(chatViewX, chatViewY, chatViewWidht, chatViewHeight);
 
     // Chat Input
     int chatInputX = getPadding(), chatInputY = chatViewHeight + 2 * getPadding();
-    int chatInputWidht = avaliableWidth * 0.9, chatInputHeight = avaliableHeight - chatViewHeight;
+    int chatInputWidht = this->getAvaliableWidth() * 0.9, chatInputHeight = this->getAvaliableHeight() - chatViewHeight  - getPadding();
     chatInput->setGeometry(chatInputX, chatInputY, chatInputWidht, chatInputHeight);
 
     // Send Message Button
     int buttonX = chatInputWidht + 2 * getPadding(), buttonY = chatInputY;
-    int buttonWidth = avaliableWidth - chatInputWidht - getPadding(), buttonHeight = chatInputHeight;
+    int buttonWidth = this->getAvaliableWidth() - chatInputWidht - getPadding(), buttonHeight = chatInputHeight;
     sendMessageButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
 }
 

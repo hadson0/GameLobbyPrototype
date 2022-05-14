@@ -1,11 +1,9 @@
 #ifndef CHATFRAME_H
 #define CHATFRAME_H
 
-#include <QPushButton>
-
-
 #include "backgroundedframe.h"
 #include "UI/Components/customtextedit.h"
+#include "UI/Components/custompushbutton.h"
 
 class ChatFrame : public BackgroundedFrame {
     Q_OBJECT
@@ -16,7 +14,7 @@ public:
     explicit ChatFrame(QWidget *parent = nullptr);
 
     CustomTextEdit *chatView, *chatInput;
-    QPushButton *sendMessageButton;
+    CustomPushButton *sendMessageButton;
 
 public slots:
     void onSendButtonClicked();
