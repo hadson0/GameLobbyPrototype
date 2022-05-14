@@ -40,7 +40,7 @@ signals:
 
     void lobbyIDChanged(QString newLobbyID);
     void lobbyLeft();
-    void clientsInLobbyChanged();
+    void clientListChanged(QStringList clientList);
 
     void inGameLobby();
     void newMessageReadyToSend(QString message);

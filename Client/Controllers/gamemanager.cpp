@@ -58,7 +58,7 @@ void GameManager::setClientList(QStringList newClientList) {
     // This if statement prevents an unecessary signal emission
     if (clientList != newClientList) {
         clientList = newClientList;
-        emit clientsInLobbyChanged();
+        emit clientListChanged(clientList);
     }
 }
 
