@@ -1,56 +1,70 @@
 #include "backgroundedframe.h"
 
 BackgroundedFrame::BackgroundedFrame(QWidget *parent)
-    : QFrame{parent}, backgroundColor(75, 37, 150), borderRadius(15), padding(0), spacing(0) {
+    : QFrame{parent}, color(75, 37, 150), borderRadius(15), padding(0), spacing(0) {
     // Disable the background (The background was visible, because it's corners are rounded)
     this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
 }
 
-QColor BackgroundedFrame::getBackgroundColor() {
-    return backgroundColor;
+QColor BackgroundedFrame::getColor() { return color; }
+
+int BackgroundedFrame::getAvaliableWidth() {
+    // Make sure that the avaliable size is updated
+    this->updateAvaliableSize();
+    return avaliableSize.width();
 }
 
-int BackgroundedFrame::getBorderRadius() {
-    return borderRadius;
+int BackgroundedFrame::getAvaliableHeight() {
+    // Make sure that the avaliable size is updated
+    this->updateAvaliableSize();
+    return avaliableSize.height();
 }
 
-int BackgroundedFrame::getPadding() {
-    return padding;
-}
+int BackgroundedFrame::getBorderRadius() { return borderRadius; }
 
-int BackgroundedFrame::getSpacing() {
-    return spacing;
-}
+int BackgroundedFrame::getPadding() { return padding; }
 
-void BackgroundedFrame::setBackgroundColor(QColor color) {
-    backgroundColor = color;
+int BackgroundedFrame::getSpacing() { return spacing; }
+
+void BackgroundedFrame::setColor(QColor color) {
+    this->color = color;
+    this->update();
 }
 
 void BackgroundedFrame::setBorderRadius(int borderRadius) {
     this->borderRadius = borderRadius;
+    this->update();
 }
 
 void BackgroundedFrame::setPadding(int padding) {
     this->padding = padding;
+    updateAvaliableSize();
 }
 
 void BackgroundedFrame::setSpacing(int spacing) {
     this->spacing = spacing;
+    this->update();
+}
+
+void BackgroundedFrame::updateAvaliableSize() {
+    avaliableSize.setHeight(this->height() - 2 * this->padding);
+    avaliableSize.setWidth(this->width() - 2 * this->padding);
+    this->update();
 }
 
 void BackgroundedFrame::paintEvent(QPaintEvent *event) {
-    Q_UNUSED(event);
+    Q_UNUSED(event);    
 
     // Setup the painter
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QPen pen(backgroundColor);
+    QPen pen(color);
     painter.setPen(pen);
 
     // Draws a rounded rect
     QPainterPath path;
     path.addRoundedRect(this->rect(), borderRadius, borderRadius);
-    painter.fillPath(path, backgroundColor);
+    painter.fillPath(path, color);
     painter.drawPath(path);
 }

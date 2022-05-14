@@ -10,23 +10,29 @@
 class BackgroundedFrame : public QFrame {
     Q_OBJECT    
 
-    QColor backgroundColor;
+    QColor color;
+    QSize avaliableSize;
     int borderRadius, padding, spacing;
 
 public:
     explicit BackgroundedFrame(QWidget *parent = nullptr);
 
     // Getters
-    QColor getBackgroundColor();
+    QColor getColor();
+    int getAvaliableWidth();
+    int getAvaliableHeight();
     int getBorderRadius();
     int getPadding();
     int getSpacing();
 
     // Setters
-    void setBackgroundColor(QColor color);
+    void setColor(QColor color);    
     void setBorderRadius(int borderRadius);
     void setPadding(int padding);
     void setSpacing(int spacing);
+
+    // Methods
+    void updateAvaliableSize();
 
 protected:
     void paintEvent(QPaintEvent *event);
