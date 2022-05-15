@@ -17,7 +17,7 @@ class ClientListView : public BackgroundedFrame {
 public:
     explicit ClientListView(QWidget *parent = nullptr);
 
-    void addClientItem(QString clientID, bool isHighlighted = false);
+    void addClientItem(QString clientIDe);
 
 public slots:
     void setReady(QString clientID, bool ready);

@@ -49,10 +49,10 @@ void ClientListView::paintEvent(QPaintEvent *event) {
     }
 }
 
-void ClientListView::addClientItem(QString clientID, bool highlighted) {
+void ClientListView::addClientItem(QString clientID) {
     // Just adds the client if he isn't already here
     if (!clientMap.contains(clientID)) {
-        clientMap[clientID] = new ClientListItem(clientID, highlighted, this);;
+        clientMap[clientID] = new ClientListItem(clientID, this);;
     }
 }
 
