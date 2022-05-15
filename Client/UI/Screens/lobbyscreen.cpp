@@ -7,6 +7,8 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
     // Client List View
     clientListView = new ClientListView(this);
     connect(this, &LobbyScreen::clientListChanged, clientListView, &ClientListView::onClientListChanged);
+    connect(this, &LobbyScreen::readyListChanged, clientListView, &ClientListView::onReadyListChanged);
+    connect(this, &LobbyScreen::setReady, clientListView, &ClientListView::setReady);
 
     // Chat Frame
     chatFrame = new ChatFrame(this);
@@ -19,7 +21,7 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
 
     // Ready Button
     readyButton = new CustomPushButton("Ready", this);
-    //connect(readyButton, &QPushButton::clicked, this, &Screen::backRequest);
+    connect(readyButton, &QPushButton::clicked, this, &LobbyScreen::requestToggleReady);
 
     // Lobby ID Label    
     lobbyIDLabel = new CustomLabel("Lobby Code: " + lobbyID, this);
@@ -40,7 +42,7 @@ void LobbyScreen::resizeEvent(QResizeEvent *event) {
 
     // Lobby ID Label
     int lobbyIDLabelX = backButtonX + backButtonWidth, lobbyIDLabelY = backButtonY;
-    int lobbyIDLabelWidth = this->getAvaliableWidth() - lobbyIDLabelX, lobbyIDLabelHeight = backButtonHeight;
+    int lobbyIDLabelWidth = this->getAvaliableWidth() - lobbyIDLabelX - readyButtonWidth, lobbyIDLabelHeight = backButtonHeight;
     lobbyIDLabel->setGeometry(lobbyIDLabelX, lobbyIDLabelY, lobbyIDLabelWidth, lobbyIDLabelHeight);
 
     // Client List View
@@ -54,7 +56,10 @@ void LobbyScreen::resizeEvent(QResizeEvent *event) {
     chatFrame->setGeometry(chatFrameX, chatFrameY, chatFrameWidth, chatFrameHeight);
 }
 
-
 void LobbyScreen::requestSendLobbyMessage(QString message) {
     emit sendRequestMessage("type:sendLobbyMessageRequest;payLoad:" + message);
+}
+
+void LobbyScreen::requestToggleReady() {
+    emit sendRequestMessage("type:toggleReadyRequest;payLoad:0");
 }

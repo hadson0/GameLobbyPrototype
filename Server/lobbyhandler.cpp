@@ -1,20 +1,10 @@
-#include "gamelobbyhandler.h"
+#include "lobbyhandler.h"
 
-GameLobbyHandler::GameLobbyHandler(QString lobbyID, QObject *parent)
+LobbyHandler::LobbyHandler(QString lobbyID, QObject *parent)
     : QObject{parent} , lobbyID(lobbyID), clientMap(QMap<QString, bool>()) {}
 
-
-void GameLobbyHandler::toggleReady(QString clientID) {
-    if (!clientMap.contains(clientID)) {
-        clientMap[clientID] = !clientMap[clientID];
-
-        emit clientReadyChanged();
-    }
-}
-
-
 // Registers the client if it isn't registered and resets all the ready status
-void GameLobbyHandler::addClient(QString clientID) {
+void LobbyHandler::addClient(QString clientID) {
     // Add the client
     if (!clientMap.contains(clientID)) {
         clientMap[clientID] = false;
@@ -24,16 +14,18 @@ void GameLobbyHandler::addClient(QString clientID) {
     for (const QString &client : getClientList()) {
         clientMap[client] = false;
     }
+
+    emit clientReadyChanged();
 }
 
 
 // Returns a QStringList containing all the clientsIDs
-QStringList GameLobbyHandler::getClientList() {
+QStringList LobbyHandler::getClientList() {
     return clientMap.keys();
 }
 
 // Returns a QString containing all the clientsIDs, separated by ",". Ex.: 1234,5678,4312
-QString GameLobbyHandler::getClientListToStr() {
+QString LobbyHandler::getClientListToStr() {
     QString clientString;
 
     for (auto &client : getClientList()) {
@@ -44,7 +36,7 @@ QString GameLobbyHandler::getClientListToStr() {
     return clientString;
 }
 
-QStringList GameLobbyHandler::getReadyClientsList() {
+QStringList LobbyHandler::getReadyClientsList() {
     QStringList readyClientsList;
 
     QMap<QString, bool>::iterator it = clientMap.begin();
@@ -57,7 +49,7 @@ QStringList GameLobbyHandler::getReadyClientsList() {
     return readyClientsList;
 }
 
-QString GameLobbyHandler::getReadyClientsListToStr() {
+QString LobbyHandler::getReadyListToStr() {
     QString readyClients;
 
     for (const QString &clientID : getReadyClientsList()) {
@@ -66,5 +58,13 @@ QString GameLobbyHandler::getReadyClientsListToStr() {
     readyClients.chop(1);
 
     return readyClients;
+}
+
+void LobbyHandler::setReady(QString clientID, bool ready) {
+    if (clientMap.contains(clientID)) {
+        clientMap[clientID] = ready;
+
+        emit clientReadyChanged();
+    }
 }
 

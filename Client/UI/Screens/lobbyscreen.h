@@ -29,10 +29,13 @@ public:
 
 public slots:
     void requestSendLobbyMessage(QString message);
+    void requestToggleReady();
 
 signals:
+    void setReady(QString clientID, bool ready);
     void newMessageRecieved(QString message);
     void clientListChanged(QStringList newClientLsit);
+    void readyListChanged(QStringList newReadyList);
 };
 
 #endif // LOBBYSCREEN_H

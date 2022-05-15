@@ -16,8 +16,9 @@ public slots:
 
 signals:
     void createLobbyRequest(QString clientID);
-    void joinLobbyRequest(QString lobbyID, QString uniqueID);
+    void joinLobbyRequest(QString lobbyID, QString clientID);
     void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
+    void setReadyRequest(QString lobbyID, QString clientID, bool ready);
 };
 
 #endif // MESSAGEPROCESSHANDLER_H

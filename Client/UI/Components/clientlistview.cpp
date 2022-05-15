@@ -1,5 +1,8 @@
 #include "clientlistview.h"
 
+
+#include <QDebug>
+
 ClientListView::ClientListView(QWidget *parent)
     : BackgroundedFrame{parent} {
     setPadding(10);    
@@ -53,23 +56,27 @@ void ClientListView::addClientItem(QString clientID, bool highlighted) {
     }
 }
 
-void ClientListView::toggleReady(QString clientID) {
+void ClientListView::setReady(QString clientID, bool ready) {
     if (clientID.contains(clientID)) {
-        clientMap[clientID]->toggleReady();
+        clientMap[clientID]->setReady(ready);
     }
 }
 
 // Adds the clients to the list
 void ClientListView::onClientListChanged(QStringList clientIDList) {
-    // The first client in the list is the host, so he is highlighted
-    addClientItem(clientIDList[0], true);
-
-    // Adds the rest of the clients
-    for (qsizetype i = 1; i < clientIDList.size(); i++) {
+    for (qsizetype i = 0; i < clientIDList.size(); i++) {
         addClientItem(clientIDList[i]);
     }
 
-    // After adding all the clients, update the frame
+    this->update();
+}
+
+void ClientListView::onReadyListChanged(QStringList newReadyList) {
+    QMap<QString, ClientListItem*>::iterator it = clientMap.begin();
+    for (; it != clientMap.end(); it++) {
+        it.value()->setReady(newReadyList.contains(it.key()));
+    }
+
     this->update();
 }
 

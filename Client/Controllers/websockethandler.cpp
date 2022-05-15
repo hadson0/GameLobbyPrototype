@@ -9,6 +9,10 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     connect(webSocket, &QWebSocket::textFrameReceived, this, &WebSocketHandler::onTextMessageReceived);
 }
 
+WebSocketHandler::~WebSocketHandler() {
+    webSocket->close();
+}
+
 void WebSocketHandler::connectToServer(QString hostAddress) {
     qDebug() << "Client App: Connect to server: " << hostAddress;
     webSocket->open(hostAddress);
@@ -22,4 +26,5 @@ void WebSocketHandler::onConnected() {}
 
 void WebSocketHandler::onTextMessageReceived(QString message) {
     emit newMessageReadyForProcessing(message);
+    //qDebug() << "Message recieved: " << message;
 }

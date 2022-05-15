@@ -1,9 +1,7 @@
 #include "clientlistitem.h"
 
-ClientListItem::ClientListItem(QString uniqueID, bool highlighted, QWidget *parent)
-    : BackgroundedFrame{parent}, defaultColor(172, 170, 177), readyColor(45, 173, 65), isReady(false) {
-    // If this is te client, the color is different
-    if (highlighted) defaultColor.setRgb(137, 123, 173);
+ClientListItem::ClientListItem(QString uniqueID, QWidget *parent)
+    : BackgroundedFrame{parent}, defaultColor(172, 170, 177), readyColor(57, 153, 72), ready(false) {
     setColor(defaultColor);
 
     // Label
@@ -24,12 +22,15 @@ void ClientListItem::resizeEvent(QResizeEvent *event) {
     clientIDLabel->setGeometry(lobbyIDLabelX, lobbyIDLabelY, lobbyIDLabelWidth, lobbyIDLabelHeight);
 }
 
-void ClientListItem::toggleReady() {    
-    isReady = !isReady; // true <-> false
+bool ClientListItem::isReady() { return ready; }
 
+void ClientListItem::setReady(bool ready) {
     // Changes color depending on whether it's ready or not
-    QColor color = (isReady) ? readyColor : defaultColor;
+    QColor color = (ready) ? readyColor : defaultColor;
     setColor(color);
+
+    this->ready = ready;    
+    this->update();
 }
 
 

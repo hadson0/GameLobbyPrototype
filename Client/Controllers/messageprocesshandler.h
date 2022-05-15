@@ -20,13 +20,15 @@ signals:
     // Socket related signals
     void clientIDRegistration(QString clientID);
     void newLobby(QString newLobbyID, QStringList newClientList);
-    void lobbyListUpdated(QStringList newClientList);
+    void clientListUpdated(QStringList newClientList);
     void newLobbyMessageRecieved(QString message);
+    void readyListUpdated(QStringList newReadyList);
 
     // Screen related signals
     void createLobbyRequest();
     void joinLobbyRequest(QString newLobbyID);
     void sendLobbyMessageRequest(QString message);
+    void toggleReadyRequest();
     void displayScreenRequest(QString destinationScreen);
 };
 

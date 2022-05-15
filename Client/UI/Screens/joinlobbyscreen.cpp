@@ -39,7 +39,6 @@ void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     font.setPixelSize(inputHeight * 0.85);
     lobbyIDInputEdit->setFont(font);
 
-
     // Instruction label
     int labelWidth = this->getAvaliableWidth(), labelHeight = this->getAvaliableHeight() * 0.12;
     int labelX = 0, labelY = (this->getAvaliableHeight() - inputHeight) / 2 - this->getSpacing() - labelHeight;

@@ -12,6 +12,7 @@ class WebSocketHandler : public QObject {
 
 public:
     explicit WebSocketHandler(QObject *parent = nullptr);
+    ~WebSocketHandler();
 
     void connectToServer(QString hostAddress);
     void sendMessageToServer(QString message);

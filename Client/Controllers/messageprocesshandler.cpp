@@ -33,7 +33,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
         clientID = getMessageData(message, "payLoad");
         if (!clientID.isEmpty()) {
-            qDebug() << "Client App: unique ID received " << clientID;
+            qDebug() << "Client ID received: " << clientID;
             emit clientIDRegistration(clientID);
         }
     }
@@ -44,7 +44,8 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         QString clientListString = getMessageData(message, "clientList");
         clientList = clientListString.split(separator);
 
-        qDebug() << "Client App: Clients in lobby: " << clientListString;
+        qDebug() << "New lobby created: " << lobbyID;
+        qDebug() << "Clients in lobby: " << clientListString;
 
         if (!lobbyID.isEmpty() && !clientList.isEmpty()) {
             emit newLobby(lobbyID, clientList);
@@ -56,8 +57,8 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         clientList = getMessageData(message, "clientList").split(separator);
 
         if (!clientList.isEmpty()) {
-            qDebug() << "Client App: Clients in lobby: " << clientList;
-            emit lobbyListUpdated(clientList);
+            qDebug() << "Clients in lobby: " << clientList;
+            emit clientListUpdated(clientList);
         }
     }
 
@@ -71,6 +72,16 @@ void MessageProcessHandler::processSocketMessage(QString message) {
             QString displayMessage = senderID + ": " + lobbyMessage;
 
             emit newLobbyMessageRecieved(displayMessage);
+        }
+    }
+
+    // type:updatedReadyClientList;payLoad:0;clientList:3090
+    else if (type == "updatedReadyClientList") {
+        clientList = getMessageData(message, "clientList").split(separator);
+
+        if (!clientList.isEmpty()) {
+            qDebug() << "Ready clients in lobby: " << clientList;
+            emit readyListUpdated(clientList);
         }
     }
 }
@@ -98,5 +109,10 @@ void MessageProcessHandler::processScreenMessage(QString message) {
         if (!lobbyMessage.isEmpty()) {
             emit sendLobbyMessageRequest(lobbyMessage);
         }
+    }
+
+    // type:toggleReadyRequest;payLoad:0
+    else if (type == "toggleReadyRequest") {
+        emit toggleReadyRequest();
     }
 }

@@ -20,10 +20,6 @@ QString getMessageData(QString message, QString dataIdentifier) {
 }
 
 void MessageProcessHandler::processSocketMessage(QString message) {
-    //qDebug() << "Server App: Message to process: " << message;
-
-    static QRegularExpression separator(",");
-
     QString type = getMessageData(message, "type");
     QString lobbyID = "", senderID = "", payLoad = "";
 
@@ -59,6 +55,19 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
         if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
             emit messageLobbyRequest(payLoad, lobbyID, senderID);
+        }
+    }
+
+    // type:setReady;payLoad:1;lobbyID:5678;senderID:1234
+    else if (type == "setReady") {
+        qDebug() << "Set ready request";
+
+        payLoad = getMessageData(message, "payLoad");
+        lobbyID = getMessageData(message, "lobbyID");
+        senderID = getMessageData(message, "senderID");
+
+        if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
+            emit setReadyRequest(lobbyID, senderID, payLoad.toInt());
         }
     }
 }

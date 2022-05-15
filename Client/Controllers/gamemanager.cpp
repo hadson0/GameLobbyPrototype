@@ -6,9 +6,10 @@ GameManager::GameManager(QObject *parent)
 
     // Socket related message process handler connections
     connect(this, &GameManager::processSocketMessage, messageProcessHandler, &MessageProcessHandler::processSocketMessage);
-    connect(messageProcessHandler, &MessageProcessHandler::clientIDRegistration, this, &GameManager::registerClientID);
+    connect(messageProcessHandler, &MessageProcessHandler::clientIDRegistration, this, &GameManager::setClientID);
     connect(messageProcessHandler, &MessageProcessHandler::newLobby, this, &GameManager::onLobbyJoined);
-    connect(messageProcessHandler, &MessageProcessHandler::lobbyListUpdated, this, &GameManager::setClientList);
+    connect(messageProcessHandler, &MessageProcessHandler::clientListUpdated, this, &GameManager::setClientList);
+    connect(messageProcessHandler, &MessageProcessHandler::readyListUpdated, this, &GameManager::setReadyList);
     connect(messageProcessHandler, &MessageProcessHandler::newLobbyMessageRecieved, this, &GameManager::newLobbyMessageRecieved);
 
     // Screen related message process handler connections
@@ -16,6 +17,7 @@ GameManager::GameManager(QObject *parent)
     connect(messageProcessHandler, &MessageProcessHandler::createLobbyRequest, this, &GameManager::createLobbyRequest);
     connect(messageProcessHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequested);
     connect(messageProcessHandler, &MessageProcessHandler::sendLobbyMessageRequest, this, &GameManager::sendLobbyMessageRequested);
+    connect(messageProcessHandler, &MessageProcessHandler::toggleReadyRequest, this, &GameManager::toggleReadyRequest);
 }
 
 GameManager::~GameManager() {
@@ -25,6 +27,11 @@ GameManager::~GameManager() {
 QString GameManager::getLobbyID() { return lobbyID; }
 
 QStringList GameManager::getClientList() { return clientMap.keys(); }
+
+
+void GameManager::setClientID(QString clientID) {
+    this->clientID = clientID;
+}
 
 void GameManager::setLobbyID(QString newLobbyID) {
     // This if statement prevents an unecessary signal emission
@@ -43,9 +50,27 @@ void GameManager::setClientList(QStringList newClientList) {
     // This if statement prevents an unecessary signal emission
     QStringList clientList = getClientList();
     if (clientList != newClientList) {
-        clientList = newClientList;
-        emit clientListChanged(clientList);
+        // Reset the client map, setting all the clients ready status to false
+        clientMap.clear();
+        for (const QString &clientID : newClientList) {
+                clientMap[clientID] = false;
+        }
+        emit clientListChanged(newClientList);
     }
+}
+
+void GameManager::setReadyList(QStringList readyClients) {
+    QMap<QString, bool>::iterator it = clientMap.begin();
+    for (; it != clientMap.end(); it++) {
+        it.value() = readyClients.contains(it.key());
+    }
+
+    emit readyListChanged(readyClients);
+}
+
+void GameManager::toggleReadyRequest() {
+    int ready = !clientMap[clientID]; // 0 = false  1 = true
+    emit newMessageReadyToSend("type:setReady;payLoad:" + QString::number(ready) + ";lobbyID:" + lobbyID + ";senderID:" + clientID);
 }
 
 void GameManager::createLobbyRequest() {
@@ -64,10 +89,6 @@ void GameManager::onLobbyJoined(QString lobbyID, QStringList newClientList) {
     setLobbyID(lobbyID);
     setClientList(newClientList);
     emit inGameLobby();
-}
-
-void GameManager::registerClientID(QString uniqueID) {
-    clientID = uniqueID;
 }
 
 

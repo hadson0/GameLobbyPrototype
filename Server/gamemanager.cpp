@@ -7,6 +7,7 @@ GameManager::GameManager(QObject *parent)
 
     //Coneccts signals and slots
     connect(webSocketHandler, &WebSocketHandler::newMessageToProcess, messageProcessorHandler, &MessageProcessHandler::processSocketMessage);
+    connect(messageProcessorHandler, &MessageProcessHandler::setReadyRequest, this, &GameManager::setReadyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::createLobbyRequest, this, &GameManager::createLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::messageLobbyRequest, this, &GameManager::messageLobbyRequest);
@@ -33,12 +34,14 @@ void GameManager::createLobbyRequest(QString clientID) {
     for (; existingKeys.contains(newLobbyID); newLobbyID = generateRandomID());
 
     // Registers the new lobby
-    GameLobbyHandler *newLobby = new GameLobbyHandler(newLobbyID, this);
-    newLobby->addClient(clientID);
-    lobbyMap[newLobbyID] = newLobby;
+    LobbyHandler *lobbyHandler = new LobbyHandler(newLobbyID, this);
+    connect(lobbyHandler, &LobbyHandler::clientReadyChanged, this, &GameManager::onClientReadyChanged);
+
+    lobbyHandler->addClient(clientID);
+    lobbyMap[newLobbyID] = lobbyHandler;
 
     // Sends the lobby ID and the client list to the client
-    webSocketHandler->sendTextMessage("type:newLobbyCreated;payLoad:" + newLobbyID + ";clientList:" + newLobby->getClientListToStr(), clientID);
+    webSocketHandler->sendTextMessage("type:newLobbyCreated;payLoad:" + newLobbyID + ";clientList:" + lobbyHandler->getClientListToStr(), clientID);
 
     qDebug() << "New Lobby created, ID: " << newLobbyID;
 }
@@ -46,7 +49,7 @@ void GameManager::createLobbyRequest(QString clientID) {
 void GameManager::joinLobbyRequest(QString lobbyID, QString clientID) {
     // Checks if the lobby is registered
     if (lobbyMap.contains(lobbyID)) {
-        GameLobbyHandler *lobbyHandler = lobbyMap[lobbyID];
+        LobbyHandler *lobbyHandler = lobbyMap[lobbyID];
         lobbyHandler->addClient(clientID);
 
         // Informs the client that it was a success
@@ -63,9 +66,25 @@ void GameManager::joinLobbyRequest(QString lobbyID, QString clientID) {
 void GameManager::messageLobbyRequest(QString message, QString lobbyID, QString senderID) {
     // Checks if the lobby is registered
     if (lobbyMap.contains(lobbyID)) {
-        GameLobbyHandler *lobbyHandler = lobbyMap[lobbyID];
+        LobbyHandler *lobbyHandler = lobbyMap[lobbyID];
 
         // Sends the message to all the clients in the lobby
         webSocketHandler->sendTextMessageToClients("type:lobbyMessage;payLoad:" + message + ";senderID:" + senderID, lobbyHandler->getClientList());
     }
+}
+
+void GameManager::setReadyRequest(QString lobbyID, QString clientID, bool ready) {
+    // Checks if the lobby is registered
+    if (lobbyMap.contains(lobbyID)) {
+        LobbyHandler *lobbyHandler = lobbyMap[lobbyID];
+        lobbyHandler->setReady(clientID, ready);
+    }
+}
+
+void GameManager::onClientReadyChanged() {
+    // Gets the lobby that sent the signal using the sender function
+    LobbyHandler *lobbyHandler = qobject_cast<LobbyHandler *>(sender());
+
+    // Sends the message to all the clients in the lobby
+    webSocketHandler->sendTextMessageToClients("type:updatedReadyClientList;payLoad:0;clientList:" + lobbyHandler->getReadyListToStr(), lobbyHandler->getClientList());
 }

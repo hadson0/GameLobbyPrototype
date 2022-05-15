@@ -9,14 +9,20 @@ class ClientListItem : public BackgroundedFrame {
 
     CustomLabel *clientIDLabel;
     QColor defaultColor, readyColor;
-    bool isReady;
+    bool ready;
 
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit ClientListItem(QString clientID, bool isHighlighted, QWidget *parent = nullptr);
+    explicit ClientListItem(QString clientID, QWidget *parent = nullptr);
 
-    void toggleReady();
+    // Getters
+    bool isReady();
+
+    // Setters
+    void setReady(bool ready);
+
+    // Methods
     void setHighlighted();
 };
 

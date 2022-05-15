@@ -1,19 +1,17 @@
-#ifndef GAMELOBBYHANDLER_H
-#define GAMELOBBYHANDLER_H
+#ifndef LOBBYHANDLER_H
+#define LOBBYHANDLER_H
 
 #include <QObject>
 #include <QMap>
 
-class GameLobbyHandler : public QObject {
+class LobbyHandler : public QObject {
     Q_OBJECT
 
     QString lobbyID;
     QMap<QString, bool> clientMap; // <ClientID, isReady>
 
-    void toggleReady(QString clientID);
-
 public:
-    explicit GameLobbyHandler(QString lobbyID, QObject *parent);
+    explicit LobbyHandler(QString lobbyID, QObject *parent);
 
     void addClient(QString clientID);
 
@@ -21,10 +19,13 @@ public:
     QStringList getClientList();
     QString getClientListToStr();
     QStringList getReadyClientsList();
-    QString getReadyClientsListToStr();
+    QString getReadyListToStr();
+
+    //Methods
+    void setReady(QString clientID, bool ready);
 
 signals:
     void clientReadyChanged();
 };
 
-#endif // GAMELOBBYHANDLER_H
+#endif // LOBBYHANDLER_H

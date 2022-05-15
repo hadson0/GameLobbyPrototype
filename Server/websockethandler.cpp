@@ -15,6 +15,10 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     }
 }
 
+WebSocketHandler::~WebSocketHandler() {
+    webSocketServer->close();
+}
+
 // Generates a QString composed of 4 random numbers. Ex.: "1234"
 QString WebSocketHandler::generateRandomID() {
     std::random_device rd;
@@ -29,7 +33,7 @@ void WebSocketHandler::sendTextMessage(QString message, QString clientID) {
     if (clientMap.contains(clientID)) {
         QWebSocket *existingClient = clientMap[clientID];
         existingClient->sendTextMessage(message);
-        qDebug() << message;
+        //qDebug() << "Send message:" << message;
     }
 }
 
@@ -63,7 +67,7 @@ void WebSocketHandler::onNewSocketConnection() {
 }
 
 void WebSocketHandler::onTextMessageReceived(QString message) {
-    qDebug() << "Server received: " << message;
+    //qDebug() << "Server received: " << message;
     emit newMessageToProcess(message);
 }
 

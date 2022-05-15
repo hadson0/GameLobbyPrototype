@@ -2,7 +2,6 @@
 #define CLIENTLISTVIEW_H
 
 #include <QListWidget>
-#include <QDebug>
 #include <QPushButton>
 
 #include "backgroundedframe.h"
@@ -21,8 +20,9 @@ public:
     void addClientItem(QString clientID, bool isHighlighted = false);
 
 public slots:
-    void toggleReady(QString clientID);
+    void setReady(QString clientID, bool ready);
     void onClientListChanged(QStringList newClientList);
+    void onReadyListChanged(QStringList newReadyList);
 };
 
 #endif // CLIENTLISTVIEW_H

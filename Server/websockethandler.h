@@ -16,6 +16,7 @@ class WebSocketHandler : public QObject {
 
 public:
     explicit WebSocketHandler(QObject *parent = nullptr);
+    ~WebSocketHandler();
 
     QString generateRandomID();
     void sendTextMessage(QString message, QString clientID);
