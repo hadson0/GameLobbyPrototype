@@ -2,7 +2,16 @@
 
 LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
     : Screen{parent}, lobbyID(lobbyID) {
-    setPadding(25);
+    setPadding(25);    
+
+    // Client List View
+    clientListView = new ClientListView(this);
+    connect(this, &LobbyScreen::clientListChanged, clientListView, &ClientListView::onClientListChanged);
+
+    // Chat Frame
+    chatFrame = new ChatFrame(this);
+    connect(chatFrame, &ChatFrame::sendMessage, this, &LobbyScreen::requestSendLobbyMessage);
+    connect(this, &LobbyScreen::newMessageRecieved, chatFrame, &ChatFrame::onMessageRecieved);
 
     // Back Button
     backButton = new CustomPushButton("Back", this);
@@ -14,15 +23,6 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
 
     // Lobby ID Label    
     lobbyIDLabel = new CustomLabel("Lobby Code: " + lobbyID, this);
-
-    // Client List View
-    clientListView = new ClientListView(this);
-    connect(this, &LobbyScreen::clientListChanged, clientListView, &ClientListView::onClientListChanged);
-
-    // Chat Frame
-    chatFrame = new ChatFrame(this);
-    connect(chatFrame, &ChatFrame::sendMessage, this, &LobbyScreen::requestSendLobbyMessage);
-    connect(this, &LobbyScreen::newMessageRecieved, chatFrame, &ChatFrame::onMessageRecieved);
 }
 
 void LobbyScreen::resizeEvent(QResizeEvent *event) {

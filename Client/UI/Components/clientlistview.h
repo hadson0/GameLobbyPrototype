@@ -11,7 +11,6 @@
 class ClientListView : public BackgroundedFrame {
     Q_OBJECT
 
-
     QMap<QString, ClientListItem *> clientMap;
 
     void paintEvent(QPaintEvent *event);
@@ -19,14 +18,11 @@ class ClientListView : public BackgroundedFrame {
 public:
     explicit ClientListView(QWidget *parent = nullptr);
 
-    void addClientItem(QString clientID, bool highlighted = false);
+    void addClientItem(QString clientID, bool isHighlighted = false);
 
 public slots:
     void toggleReady(QString clientID);
-    void onClientListChanged(QStringList clientList);
-
-signals:
-
+    void onClientListChanged(QStringList newClientList);
 };
 
 #endif // CLIENTLISTVIEW_H

@@ -12,10 +12,14 @@
 class LobbyScreen : public Screen {
     Q_OBJECT
 
-    CustomPushButton *backButton, *readyButton;
-    CustomLabel *lobbyIDLabel;
+    // Custom frames
     ClientListView *clientListView;
     ChatFrame *chatFrame;
+
+    // Widgets
+    CustomPushButton *backButton, *readyButton;
+    CustomLabel *lobbyIDLabel;
+
     QString lobbyID;
 
     void resizeEvent(QResizeEvent *event);
@@ -28,7 +32,7 @@ public slots:
 
 signals:
     void newMessageRecieved(QString message);
-    void clientListChanged(QStringList clientLsit);
+    void clientListChanged(QStringList newClientLsit);
 };
 
 #endif // LOBBYSCREEN_H

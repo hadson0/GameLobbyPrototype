@@ -7,9 +7,11 @@
 
 class WebSocketHandler : public QObject {
     Q_OBJECT
+
+    QWebSocket *webSocket;
+
 public:
     explicit WebSocketHandler(QObject *parent = nullptr);
-    ~WebSocketHandler();
 
     void connectToServer(QString hostAddress);
     void sendMessageToServer(QString message);
@@ -19,10 +21,7 @@ public slots:
     void onTextMessageReceived(QString message);
 
 signals:
-    void newMessageReadyForProcessing(QString message);
-
-private:
-    QWebSocket *webSocket;
+    void newMessageReadyForProcessing(QString message);   
 };
 
 #endif // WEBSOCKETHANDLER_H

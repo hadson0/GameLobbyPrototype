@@ -11,6 +11,7 @@
 class SelectionScreen : public Screen {
     Q_OBJECT
 
+    // Widgets
     CustomLabel *label;
     QPushButton *createLobbyButton, *joinLobbyButton;
     QPushButton *backButton;

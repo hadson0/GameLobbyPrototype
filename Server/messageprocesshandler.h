@@ -7,6 +7,7 @@
 
 class MessageProcessHandler : public QObject {
     Q_OBJECT
+
 public:
     explicit MessageProcessHandler(QObject *parent = nullptr);
 

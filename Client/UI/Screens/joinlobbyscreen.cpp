@@ -6,7 +6,7 @@ JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
     setSpacing(25);
 
     // Instruction label
-    label = new CustomLabel("Lobby Code", this);
+    instructionLabel = new CustomLabel("Lobby ID", this);
 
     // Lobby ID Input
     lobbyIDInputEdit = new QLineEdit(this);
@@ -25,6 +25,7 @@ JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
 
 void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
+
     // Back Button
     int backButtonX = this->getPadding(), backButtonY = this->getPadding();
     int backButtonWidth = this->getAvaliableWidth() * 0.08, backButtonHeight = this->getAvaliableHeight() * 0.08;
@@ -42,7 +43,7 @@ void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     // Instruction label
     int labelWidth = this->getAvaliableWidth(), labelHeight = this->getAvaliableHeight() * 0.12;
     int labelX = 0, labelY = (this->getAvaliableHeight() - inputHeight) / 2 - this->getSpacing() - labelHeight;
-    label->setGeometry(labelX, labelY, labelWidth, labelHeight);
+    instructionLabel->setGeometry(labelX, labelY, labelWidth, labelHeight);
 
     // Join Button
     int joinButtonWidth = this->getAvaliableWidth() * 0.25, joinButtonHeight = this->getAvaliableHeight() * 0.15;
@@ -51,7 +52,7 @@ void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
 }
 
 void JoinLobbyScreen::onJoinButtonClicked() {
-    QString newLobbyID = QString();
+    QString newLobbyID = "";
     newLobbyID = lobbyIDInputEdit->text();
 
     if (newLobbyID.length() == 4) {

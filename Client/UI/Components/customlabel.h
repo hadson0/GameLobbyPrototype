@@ -11,7 +11,7 @@ class CustomLabel : public QLabel {
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit CustomLabel(QString text = QString(), QWidget *parent = nullptr);
+    explicit CustomLabel(QString text = "", QWidget *parent = nullptr);
 
     // Getters
     int getFontSize();

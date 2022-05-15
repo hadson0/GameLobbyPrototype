@@ -9,7 +9,7 @@ class GameManager : public QObject {
     Q_OBJECT
 
     QString clientID; // Lobby host ID (who created the lobby)
-    QStringList clientList; // List of the clients in the lobby
+    QMap<QString, bool> clientMap; // <ClientID, isReady>
     QString lobbyID;
 
     MessageProcessHandler *messageProcessHandler;
@@ -18,33 +18,33 @@ public:
     explicit GameManager(QObject *parent = nullptr);
     ~GameManager();
 
+    // Getters
     QString getLobbyID();
-    QStringList getClientsInLobby();
+    QStringList getClientList();
 
-
-public slots:
-    void onCreateLobbyRequested();
-    void onJoinLobbyRequested(QString lobbyID);
-    void onSendLobbyMessageRequested(QString message);
-
+public slots:    
+    // Setters
     void setLobbyID(QString lobbyID);
     void setClientList(QStringList clients);
 
-    void registerUniqueID(QString uniqueID);
-
+    // Methods
+    void createLobbyRequest();
+    void joinLobbyRequested(QString lobbyID);
+    void sendLobbyMessageRequested(QString message);
     void onLobbyJoined(QString lobbyID, QStringList clients);
+    void registerClientID(QString clientID);
 
 signals:
     void processSocketMessage(QString message);
     void processScreenMessage(QString message);
 
+    void clientListChanged(QStringList clientList);
     void lobbyIDChanged(QString newLobbyID);
     void lobbyLeft();
-    void clientListChanged(QStringList clientList);
 
-    void inGameLobby();
-    void newMessageReadyToSend(QString message);
     void newLobbyMessageRecieved(QString message);
+    void newMessageReadyToSend(QString message);
+    void inGameLobby();
 };
 
 #endif // GAMEMANAGER_H

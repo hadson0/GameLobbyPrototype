@@ -8,13 +8,14 @@
 class ChatFrame : public BackgroundedFrame {
     Q_OBJECT
 
+    // Widgets
+    CustomTextEdit *chatView, *chatInput;
+    CustomPushButton *sendMessageButton;
+
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit ChatFrame(QWidget *parent = nullptr);
-
-    CustomTextEdit *chatView, *chatInput;
-    CustomPushButton *sendMessageButton;
+    explicit ChatFrame(QWidget *parent = nullptr);    
 
 public slots:
     void onSendButtonClicked();

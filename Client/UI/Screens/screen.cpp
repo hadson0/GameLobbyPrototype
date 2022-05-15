@@ -13,13 +13,9 @@ int Screen::getAvaliableWidth() { return avaliableSize.width(); }
 
 int Screen::getAvaliableHeight() { return avaliableSize.height(); }
 
-int Screen::getPadding() {
-    return padding;
-}
+int Screen::getPadding() { return padding; }
 
-int Screen::getSpacing() {
-    return spacing;
-}
+int Screen::getSpacing() { return spacing; }
 
 void Screen::setPadding(int padding) {
     this->padding = padding;

@@ -6,6 +6,7 @@ CustomTextEdit::CustomTextEdit(QWidget *parent)
     fontAux = this->font();
     fontAux.setPixelSize(20);
 
+    // Sets the style
     this->setStyleSheet("QTextEdit {"
                             "background-color: #E3DDF0; border-radius: 15px;"
                             "padding: 5px;"
@@ -14,7 +15,7 @@ CustomTextEdit::CustomTextEdit(QWidget *parent)
 }
 
 void CustomTextEdit::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+    if (event->key() == Qt::Key_Enter) {
         emit enterPressed();
     } else {
         QTextEdit::keyPressEvent(event);

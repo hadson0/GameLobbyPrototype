@@ -20,6 +20,7 @@
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
+    // Screens
     QStack<Screen *> menuScreenStack;
     LobbyScreen *lobbyScreen;
 
@@ -34,6 +35,5 @@ public:
 
 public slots:
     void onBackRequested();
-    void onQuitApplicationRequested();
 };
 #endif // MAINWINDOW_H

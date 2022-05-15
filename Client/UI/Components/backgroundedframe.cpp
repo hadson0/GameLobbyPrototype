@@ -10,13 +10,11 @@ BackgroundedFrame::BackgroundedFrame(QWidget *parent)
 QColor BackgroundedFrame::getColor() { return color; }
 
 int BackgroundedFrame::getAvaliableWidth() {
-    // Make sure that the avaliable size is updated
     this->updateAvaliableSize();
     return avaliableSize.width();
 }
 
 int BackgroundedFrame::getAvaliableHeight() {
-    // Make sure that the avaliable size is updated
     this->updateAvaliableSize();
     return avaliableSize.height();
 }
@@ -62,7 +60,7 @@ void BackgroundedFrame::paintEvent(QPaintEvent *event) {
     QPen pen(color);
     painter.setPen(pen);
 
-    // Draws a rounded rect
+    // Draws a rounded rect to be the background
     QPainterPath path;
     path.addRoundedRect(this->rect(), borderRadius, borderRadius);
     painter.fillPath(path, color);

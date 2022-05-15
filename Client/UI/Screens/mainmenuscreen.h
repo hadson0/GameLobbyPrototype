@@ -10,8 +10,10 @@
 class MainMenuScreen : public Screen {
     Q_OBJECT
 
-    CustomLabel *label;
+    // Widgets
     CustomPushButton *playButton, *quitButton;
+
+    CustomLabel *label;
 
     void resizeEvent(QResizeEvent *event);
 

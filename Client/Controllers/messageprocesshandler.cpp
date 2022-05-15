@@ -5,18 +5,18 @@ MessageProcessHandler::MessageProcessHandler(QObject *parent)
 
 // Extracts the data from the message and returns it
 QString MessageProcessHandler::getMessageData(QString message, QString dataIdentifier) {
-    // Separates the message
     QRegularExpression separator;
     separator.setPattern(";");
 
     // Searches for the data and returns it;
     for (QString &message : message.split(separator)) {
-        if (message.contains(dataIdentifier))
+        if (message.contains(dataIdentifier)) {
             return message.remove(dataIdentifier + ":");
+        }
     }
 
     // If the data isn't in the message, returns an empty QString
-    return QString();
+    return "";
 }
 
 void MessageProcessHandler::processSocketMessage(QString message) {
@@ -25,8 +25,8 @@ void MessageProcessHandler::processSocketMessage(QString message) {
     static QRegularExpression separator(",");
 
     QString type = getMessageData(message, "type");
-    QString clientID = QString(), lobbyID = QString(), senderID = QString(), lobbyMessage = QString();
-    QStringList clientList = QStringList();
+    QString clientID = "", lobbyID = "", senderID = "", lobbyMessage = "";
+    QStringList clientList;
 
     // type:uniqueId;payLoad:1234
     if (type == "uniqueID") {
@@ -34,7 +34,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         clientID = getMessageData(message, "payLoad");
         if (!clientID.isEmpty()) {
             qDebug() << "Client App: unique ID received " << clientID;
-            emit uniqueIDRegistration(clientID);
+            emit clientIDRegistration(clientID);
         }
     }
 
@@ -46,18 +46,19 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
         qDebug() << "Client App: Clients in lobby: " << clientListString;
 
-        if (!lobbyID.isEmpty() && !clientList.isEmpty())
+        if (!lobbyID.isEmpty() && !clientList.isEmpty()) {
             emit newLobby(lobbyID, clientList);
+        }
     }
 
     // type:updatedClientList;payLoad:1234,5678,4444
     else if (type == "updatedClientList") {
-        qDebug() << "Client App: Received updated client list";
+        clientList = getMessageData(message, "clientList").split(separator);
 
-        clientList = getMessageData(message, "payLoad").split(separator);
-
-        if (!clientList.isEmpty())
+        if (!clientList.isEmpty()) {
+            qDebug() << "Client App: Clients in lobby: " << clientList;
             emit lobbyListUpdated(clientList);
+        }
     }
 
     // type:lobbyMessage;payLoad:HelloWorld;senderID:1234
@@ -69,7 +70,6 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         if (!lobbyMessage.isEmpty() && !senderID.isEmpty()) {
             QString displayMessage = senderID + ": " + lobbyMessage;
 
-            qDebug() << "Client App: New lobby message received";
             emit newLobbyMessageRecieved(displayMessage);
         }
     }
@@ -77,7 +77,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
 void MessageProcessHandler::processScreenMessage(QString message) {
     QString type = getMessageData(message, "type");
-    QString newLobbyID = QString(), lobbyMessage = QString();
+    QString newLobbyID = "", lobbyMessage = "";
 
     // type:createLobbyRequest;payload:0`
     if (type == "createLobbyRequest") {
@@ -87,14 +87,16 @@ void MessageProcessHandler::processScreenMessage(QString message) {
     // type:joinLobbyRequest;payLoad:1234
     else if (type == "joinLobbyRequest") {
         newLobbyID = getMessageData(message, "payLoad");
-        if (!newLobbyID.isEmpty())
+        if (!newLobbyID.isEmpty()) {
             emit joinLobbyRequest(newLobbyID);
+        }
     }
 
     // type:sendLobbyMessageRequest;payload:" + message
     else if (type == "sendLobbyMessageRequest") {
         lobbyMessage = getMessageData(message, "payLoad");
-        if (!lobbyMessage.isEmpty())
+        if (!lobbyMessage.isEmpty()) {
             emit sendLobbyMessageRequest(lobbyMessage);
+        }
     }
 }

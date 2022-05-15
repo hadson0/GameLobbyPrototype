@@ -5,10 +5,10 @@ CustomLabel::CustomLabel(QString text, QWidget *parent)
     // Set alignment center
     this->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 
+    // Sets the style
     this->setStyleSheet("QLabel { "
                             "color: white;"
                             "font-weight: bold;"
-                            "text-align: center"
                         "}");
 }
 

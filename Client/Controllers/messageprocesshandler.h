@@ -18,9 +18,9 @@ public slots:
 
 signals:
     // Socket related signals
-    void uniqueIDRegistration(QString uniqueID);
-    void newLobby(QString lobbyID, QStringList clientList);
-    void lobbyListUpdated(QStringList clientList);
+    void clientIDRegistration(QString clientID);
+    void newLobby(QString newLobbyID, QStringList newClientList);
+    void lobbyListUpdated(QStringList newClientList);
     void newLobbyMessageRecieved(QString message);
 
     // Screen related signals

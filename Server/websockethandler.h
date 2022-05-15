@@ -10,9 +10,12 @@
 
 class WebSocketHandler : public QObject {
     Q_OBJECT
+
+    QWebSocketServer *webSocketServer;
+    QMap<QString, QWebSocket *> clientMap;
+
 public:
     explicit WebSocketHandler(QObject *parent = nullptr);
-    ~WebSocketHandler();
 
     QString generateRandomID();
     void sendTextMessage(QString message, QString clientID);
@@ -24,11 +27,7 @@ public slots:
     void onSocketDisconnected();
 
 signals:
-    void newMessageToProcess(QString message);
-
-private:
-    QWebSocketServer *webSocketServer;
-    QMap<QString, QWebSocket *> clientMap; // Map of all the registered clients (WebSockets) on the server
+    void newMessageToProcess(QString message);    
 };
 
 #endif // WEBSOCKETHANDLER_H

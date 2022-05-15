@@ -12,7 +12,7 @@ class CustomPushButton : public QPushButton {
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit CustomPushButton(QString text, QWidget *parent = nullptr);
+    explicit CustomPushButton(QString text = "", QWidget *parent = nullptr);
 
     // Getters
     int getFontSize();

@@ -2,6 +2,7 @@
 
 CustomPushButton::CustomPushButton(QString text, QWidget *parent)
     : QPushButton{text, parent} {
+    // Sets the style
     this->setStyleSheet("QPushButton {"
                             "background-color: white; "
                             "border-radius: 15px; "
@@ -9,13 +10,13 @@ CustomPushButton::CustomPushButton(QString text, QWidget *parent)
                             "font-weight: bold;"
                             "color: #110C5A;"
                         "}"
-                        "QPushButton:pressed {"
-                            "background-color: #CABFE0;"
-                        "}");
+
+                        "QPushButton:pressed {background-color: #CABFE0;}");
 }
 
 void CustomPushButton::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
+
     setFontSize((this->height()) * 0.40);
 }
 

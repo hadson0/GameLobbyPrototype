@@ -11,7 +11,8 @@
 class JoinLobbyScreen : public Screen {
     Q_OBJECT
 
-    CustomLabel *label;
+    // Widgets
+    CustomLabel *instructionLabel;
     CustomPushButton *joinButton, *backButton;
     QLineEdit *lobbyIDInputEdit;
 

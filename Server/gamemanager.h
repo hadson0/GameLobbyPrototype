@@ -27,7 +27,7 @@ public:
 public slots:
     void createLobbyRequest(QString clientID);
     void joinLobbyRequest(QString lobbyId, QString clientID);
-    void messageLobbyRequest(QString message, QString lobbyID, QString senderID);   
+    void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
 };
 
 #endif // GAMEMANAGER_H

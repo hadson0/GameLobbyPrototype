@@ -8,10 +8,8 @@ const QString getStyleSheet();
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    MainWindow mainWindow;
-
-    // Main Window size and position
     int mainWindowWidth = 1200, mainWindowHeight = 675;
+    MainWindow mainWindow;
     mainWindow.setFixedSize(mainWindowWidth, mainWindowHeight);
 
     mainWindow.setStyleSheet(getStyleSheet());

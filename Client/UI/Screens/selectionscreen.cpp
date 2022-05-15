@@ -1,4 +1,4 @@
-    #include "selectionscreen.h"
+#include "selectionscreen.h"
 
 SelectionScreen::SelectionScreen(QWidget *parent)
     : Screen(parent) {

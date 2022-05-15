@@ -31,10 +31,10 @@ public:
     void updateAvaliableSize();
 
 signals:
-    void sendRequestMessage(QString requestMessage);
     void displayMenuScreenRequest(QString destinationScreen);
+    void sendRequestMessage(QString requestMessage);
+    void quitAppRequest();
     void backRequest();
-    void quitApplicationRequest();
 };
 
 #endif // SCREEN_H

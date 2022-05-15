@@ -1,9 +1,7 @@
 ﻿#include "chatframe.h"
 
-#include <QDebug>
-
-    ChatFrame::ChatFrame(QWidget *parent)
-        : BackgroundedFrame{parent} {
+ChatFrame::ChatFrame(QWidget *parent)
+    : BackgroundedFrame{parent} {
     setPadding(10);
 
     // Chat View

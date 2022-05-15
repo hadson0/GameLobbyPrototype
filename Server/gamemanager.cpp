@@ -38,7 +38,7 @@ void GameManager::createLobbyRequest(QString clientID) {
     lobbyMap[newLobbyID] = newLobby;
 
     // Sends the lobby ID and the client list to the client
-    webSocketHandler->sendTextMessage("type:newLobbyCreated;payLoad:" + newLobbyID + ";clientList:" + newLobby->getClientListToString(), clientID);
+    webSocketHandler->sendTextMessage("type:newLobbyCreated;payLoad:" + newLobbyID + ";clientList:" + newLobby->getClientListToStr(), clientID);
 
     qDebug() << "New Lobby created, ID: " << newLobbyID;
 }
@@ -46,14 +46,14 @@ void GameManager::createLobbyRequest(QString clientID) {
 void GameManager::joinLobbyRequest(QString lobbyID, QString clientID) {
     // Checks if the lobby is registered
     if (lobbyMap.contains(lobbyID)) {
-        GameLobbyHandler *existingLobby = lobbyMap[lobbyID];
-        existingLobby->addClient(clientID);
+        GameLobbyHandler *lobbyHandler = lobbyMap[lobbyID];
+        lobbyHandler->addClient(clientID);
 
         // Informs the client that it was a success
-        webSocketHandler->sendTextMessage("type:joinSuccess;payLoad:" + lobbyID  + ";clientList:" + existingLobby->getClientListToString() , clientID);
+        webSocketHandler->sendTextMessage("type:joinSuccess;payLoad:" + lobbyID  + ";clientList:" + lobbyHandler->getClientListToStr() , clientID);
 
         // Updates the client list to all the clients in the lobby
-        webSocketHandler->sendTextMessageToClients("type:updatedClientList;payLoad:" + existingLobby->getClientListToString(), existingLobby->getClientList());
+        webSocketHandler->sendTextMessageToClients("type:updatedClientList;payLoad:0;clientList:" + lobbyHandler->getClientListToStr(), lobbyHandler->getClientList());
     } else {
         // Informs the client that an error has occurred
         webSocketHandler->sendTextMessage("type:joinError;payLoad:DNE", clientID);
@@ -63,9 +63,9 @@ void GameManager::joinLobbyRequest(QString lobbyID, QString clientID) {
 void GameManager::messageLobbyRequest(QString message, QString lobbyID, QString senderID) {
     // Checks if the lobby is registered
     if (lobbyMap.contains(lobbyID)) {
-        GameLobbyHandler *existingLobby = lobbyMap[lobbyID];
+        GameLobbyHandler *lobbyHandler = lobbyMap[lobbyID];
 
         // Sends the message to all the clients in the lobby
-        webSocketHandler->sendTextMessageToClients("type:lobbyMessage;payLoad:" + message + ";senderID:" + senderID, existingLobby->getClientList());
+        webSocketHandler->sendTextMessageToClients("type:lobbyMessage;payLoad:" + message + ";senderID:" + senderID, lobbyHandler->getClientList());
     }
 }

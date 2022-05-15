@@ -11,7 +11,7 @@ MainMenuScreen::MainMenuScreen(QWidget *parent)
 
     // Quit Button
     quitButton = new CustomPushButton("Quit", this);
-    connect(quitButton, &QPushButton::clicked, this, &Screen::quitApplicationRequest);
+    connect(quitButton, &QPushButton::clicked, this, &Screen::quitAppRequest);
 }
 
 void MainMenuScreen::resizeEvent(QResizeEvent *event) {

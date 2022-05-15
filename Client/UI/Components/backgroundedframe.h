@@ -36,9 +36,6 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
-
-signals:
-
 };
 
 #endif // BACKGROUNDEDFRAME_H

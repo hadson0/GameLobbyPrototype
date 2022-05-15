@@ -15,11 +15,6 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     }
 }
 
-WebSocketHandler::~WebSocketHandler() {
-    // Guarantees that memory will be deallocated
-    webSocketServer->deleteLater();
-}
-
 // Generates a QString composed of 4 random numbers. Ex.: "1234"
 QString WebSocketHandler::generateRandomID() {
     std::random_device rd;
@@ -73,7 +68,7 @@ void WebSocketHandler::onTextMessageReceived(QString message) {
 }
 
 void WebSocketHandler::onSocketDisconnected() {
-    // Client that sent the signal
+    // Gets the client that sent the signal using the sender function
     QWebSocket *client = qobject_cast<QWebSocket *>(sender());
 
     // Checks if the client is valid
