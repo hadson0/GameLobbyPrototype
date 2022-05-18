@@ -31,7 +31,7 @@ public:
     void updateAvaliableSize();
 
 signals:
-    void displayMenuScreenRequest(QString destinationScreen);
+    void menuScreenDisplayRequest(QString destinationScreen);
     void sendRequestMessage(QString requestMessage);
     void quitAppRequest();
     void backRequest();

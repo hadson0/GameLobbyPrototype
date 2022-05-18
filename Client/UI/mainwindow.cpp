@@ -38,7 +38,7 @@ void MainWindow::displayMenuScreen(QString destinationMenuScreen) {
         connect(newScreen, &Screen::backRequest, this, &MainWindow::onBackRequested);
         connect(newScreen, &Screen::quitAppRequest, this, &QApplication::quit);
         connect(newScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
-        connect(newScreen, &Screen::displayMenuScreenRequest, this, &MainWindow::displayMenuScreen);
+        connect(newScreen, &Screen::menuScreenDisplayRequest, this, &MainWindow::displayMenuScreen);
 
         if (!menuScreenStack.isEmpty()) {
             menuScreenStack.top()->hide();
@@ -57,7 +57,7 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
 
     connect(lobbyScreen, &Screen::backRequest, this, &MainWindow::onBackRequested);
     connect(lobbyScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
-    connect(lobbyScreen, &Screen::displayMenuScreenRequest, this, &MainWindow::displayMenuScreen);
+    connect(lobbyScreen, &Screen::menuScreenDisplayRequest, this, &MainWindow::displayMenuScreen);
 
     connect(gameManager, &GameManager::newLobbyMessageRecieved, lobbyScreen, &LobbyScreen::newMessageRecieved);
     connect(gameManager, &GameManager::clientListChanged, lobbyScreen, &LobbyScreen::clientListChanged);
@@ -82,5 +82,3 @@ void MainWindow::onBackRequested() {
     // Shows the previous screen
     menuScreenStack.top()->show();
 }
-
-

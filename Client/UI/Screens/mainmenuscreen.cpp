@@ -37,5 +37,5 @@ void MainMenuScreen::resizeEvent(QResizeEvent *event) {
 }
 
 void MainMenuScreen::onPlayButtonPressed() {
-    emit displayMenuScreenRequest("SelectionScreen");
+    emit menuScreenDisplayRequest("SelectionScreen");
 }

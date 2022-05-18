@@ -49,5 +49,5 @@ void SelectionScreen::onCreateLobbyCklicked() {
 }
 
 void SelectionScreen::onJoinLobbyButtonClicked() {
-    emit displayMenuScreenRequest("JoinLobbyScreen");
+    emit menuScreenDisplayRequest("JoinLobbyScreen");
 }

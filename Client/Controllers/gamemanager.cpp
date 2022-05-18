@@ -95,6 +95,3 @@ void GameManager::onLobbyJoined(QString lobbyID, QStringList newClientList) {
     setClientList(newClientList);
     emit inGameLobby();
 }
-
-
-
