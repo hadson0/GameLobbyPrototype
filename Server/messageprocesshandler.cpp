@@ -28,7 +28,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
         senderID = getMessageData(message, "senderID");
         if (!senderID.isEmpty()) {
-            qDebug() << "Create game request, ClientID: " << senderID;
+            qDebug() << "Create game request, client ID: " << senderID;
             emit createLobbyRequest(senderID);
         }
     }
@@ -40,7 +40,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         senderID = getMessageData(message, "senderID");
 
         if (!lobbyID.isEmpty() && !senderID.isEmpty()) {
-            qDebug() << "Join game request, ClientID: " << senderID;
+            qDebug() << "Join game request, client ID: " << senderID;
             emit joinLobbyRequest(lobbyID, senderID);
         }
     }
@@ -53,7 +53,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         senderID = getMessageData(message, "senderID");
 
         if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
-            qDebug() << "Lobby message request, ClientID: " << senderID;
+            qDebug() << "Lobby message request, client ID: " << senderID;
             emit messageLobbyRequest(payLoad, lobbyID, senderID);
         }
     }
@@ -66,7 +66,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         senderID = getMessageData(message, "senderID");
 
         if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
-            qDebug() << "Set ready request, ClientID: " << senderID;
+            qDebug() << "Set ready request, client ID: " << senderID;
             emit setReadyRequest(lobbyID, senderID, payLoad.toInt());
         }
     }
@@ -78,7 +78,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         senderID = getMessageData(message, "senderID");
 
         if (!lobbyID.isEmpty() && !senderID.isEmpty()) {
-            qDebug() << "Client left the lobby, ClientID: " << senderID;
+            qDebug() << "Client left the lobby, ID: " << senderID;
             emit quitLobbyRequest(lobbyID, senderID);
         }
     }

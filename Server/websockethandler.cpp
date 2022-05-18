@@ -76,12 +76,17 @@ void WebSocketHandler::onSocketDisconnected() {
     QWebSocket *client = qobject_cast<QWebSocket *>(sender());
 
     // Checks if the client is valid
-    if (client) {
+    if (client != nullptr) {
         // Iterates through the map until it finds the client, then disconnect it (delete it)
-        for (auto clientMapIterator = clientMap.begin(); clientMapIterator != clientMap.end(); clientMapIterator++) {
-            QString uID = clientMapIterator.key();
-            clientMap.remove(uID);
-            client->deleteLater();
+        for (auto it = clientMap.begin(); it != clientMap.end(); it++) {
+            if (it.value()->localAddress() == client->localAddress()) {
+                QString clientID = it.key();
+                clientMap.remove(clientID);
+                client->deleteLater();
+
+                qDebug() << "Client disconnected, ID: " << clientID;
+                break;
+            }
         }
     }
 }
