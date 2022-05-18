@@ -33,7 +33,7 @@ void WebSocketHandler::sendTextMessage(QString message, QString clientID) {
     if (clientMap.contains(clientID)) {
         QWebSocket *existingClient = clientMap[clientID];
         existingClient->sendTextMessage(message);
-        //qDebug() << "Send message:" << message;
+        qDebug() << "Send message:" << message;
     }
 }
 
@@ -67,7 +67,7 @@ void WebSocketHandler::onNewSocketConnection() {
 }
 
 void WebSocketHandler::onTextMessageReceived(QString message) {
-    //qDebug() << "Server received: " << message;
+    qDebug() << "Server received: " << message;
     emit newMessageToProcess(message);
 }
 

@@ -25,11 +25,12 @@ signals:
     void readyListUpdated(QStringList newReadyList);
 
     // Screen related signals
+    void displayScreenRequest(QString destinationScreen);
     void createLobbyRequest();
     void joinLobbyRequest(QString newLobbyID);
     void sendLobbyMessageRequest(QString message);
     void toggleReadyRequest();
-    void displayScreenRequest(QString destinationScreen);
+    void quitLobbyRequest();
 };
 
 #endif // MESSAGEPROCESSHANDLER_H

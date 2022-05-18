@@ -5,7 +5,7 @@
 
 ClientListView::ClientListView(QWidget *parent)
     : BackgroundedFrame{parent} {
-    setPadding(10);    
+    setPadding(10);
 }
 
 void ClientListView::paintEvent(QPaintEvent *event) {
@@ -50,9 +50,15 @@ void ClientListView::paintEvent(QPaintEvent *event) {
 }
 
 void ClientListView::addClientItem(QString clientID) {
-    // Just adds the client if he isn't already here
     if (!clientMap.contains(clientID)) {
         clientMap[clientID] = new ClientListItem(clientID, this);;
+    }
+}
+
+void ClientListView::removeClientItem(QString clientID) {
+    if (clientMap.contains(clientID)) {
+        delete clientMap[clientID];
+        clientMap.remove(clientID);
     }
 }
 
@@ -63,9 +69,18 @@ void ClientListView::setReady(QString clientID, bool ready) {
 }
 
 // Adds the clients to the list
-void ClientListView::onClientListChanged(QStringList clientIDList) {
-    for (qsizetype i = 0; i < clientIDList.size(); i++) {
-        addClientItem(clientIDList[i]);
+void ClientListView::onClientListChanged(QStringList newClientList) {
+    // Removes the clients who left the lobby
+    QStringList oldClientList = clientMap.keys();
+    for (const QString &clientID : oldClientList) {
+        if (!newClientList.contains(clientID)) {
+            removeClientItem(clientID);
+        }
+    }
+
+    // Adds the new clients
+    for (const QString &clientID : newClientList) {
+        addClientItem(clientID);
     }
 
     this->update();

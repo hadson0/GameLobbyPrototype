@@ -5,9 +5,24 @@ LobbyHandler::LobbyHandler(QString lobbyID, QObject *parent)
 
 // Registers the client if it isn't registered and resets all the ready status
 void LobbyHandler::addClient(QString clientID) {
-    // Add the client
+    // Adds the client
     if (!clientMap.contains(clientID)) {
         clientMap[clientID] = false;
+    }
+
+    // Set all the ready status to false
+    for (const QString &client : getClientList()) {
+        clientMap[client] = false;
+    }
+
+    emit clientReadyChanged();
+}
+
+// Remove the client from the lobby and resets all the ready status
+void LobbyHandler::removeClient(QString clientID) {
+    // removes the client
+    if (clientMap.contains(clientID)) {
+        clientMap.remove(clientID);
     }
 
     // Set all the ready status to false

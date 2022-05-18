@@ -25,49 +25,61 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
     //type:createGame;payLoad:0000;senderID:1234
     if (type == "createGame") {
-        qDebug() << "Create game request";
 
         senderID = getMessageData(message, "senderID");
         if (!senderID.isEmpty()) {
+            qDebug() << "Create game request, ClientID: " << senderID;
             emit createLobbyRequest(senderID);
         }
     }
 
     //type:joinGame;payLoad:1234;sender:5678
     else if (type == "joinGame") {
-        qDebug() << "Join game request";
 
         lobbyID = getMessageData(message, "payLoad");
         senderID = getMessageData(message, "senderID");
 
         if (!lobbyID.isEmpty() && !senderID.isEmpty()) {
+            qDebug() << "Join game request, ClientID: " << senderID;
             emit joinLobbyRequest(lobbyID, senderID);
         }
     }
 
-    //type:message;payLoad:HelloLobby;lobbyID:1234senderID:5678
+    //type:message;payLoad:HelloLobby;lobbyID:1234;senderID:5678
     else if (type == "message") {
-        qDebug() << "Lobby message request";
 
         payLoad = getMessageData(message, "payLoad");
         lobbyID = getMessageData(message, "lobbyID");
         senderID = getMessageData(message, "senderID");
 
         if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
+            qDebug() << "Lobby message request, ClientID: " << senderID;
             emit messageLobbyRequest(payLoad, lobbyID, senderID);
         }
     }
 
     // type:setReady;payLoad:1;lobbyID:5678;senderID:1234
     else if (type == "setReady") {
-        qDebug() << "Set ready request";
 
         payLoad = getMessageData(message, "payLoad");
         lobbyID = getMessageData(message, "lobbyID");
         senderID = getMessageData(message, "senderID");
 
         if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
+            qDebug() << "Set ready request, ClientID: " << senderID;
             emit setReadyRequest(lobbyID, senderID, payLoad.toInt());
+        }
+    }
+
+    // type:quitLobbyRequest;payLoad:0;lobbyID:1234;senderID:5678
+    else if (type == "quitLobbyRequest") {
+
+        lobbyID = getMessageData(message, "lobbyID");
+        senderID = getMessageData(message, "senderID");
+
+        if (!lobbyID.isEmpty() && !senderID.isEmpty()) {
+            qDebug() << "Client left the lobby, ClientID: " << senderID;
+            emit quitLobbyRequest(lobbyID, senderID);
         }
     }
 }

@@ -44,8 +44,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         QString clientListString = getMessageData(message, "clientList");
         clientList = clientListString.split(separator);
 
-        qDebug() << "New lobby created: " << lobbyID;
-        qDebug() << "Clients in lobby: " << clientListString;
+        qDebug() << "New lobby: " << lobbyID;
 
         if (!lobbyID.isEmpty() && !clientList.isEmpty()) {
             emit newLobby(lobbyID, clientList);
@@ -114,5 +113,10 @@ void MessageProcessHandler::processScreenMessage(QString message) {
     // type:toggleReadyRequest;payLoad:0
     else if (type == "toggleReadyRequest") {
         emit toggleReadyRequest();
+    }
+
+    // type:quitLobbyRequest;payLoad:0;
+    else if (type == "quitLobbyRequest") {
+        emit quitLobbyRequest();
     }
 }

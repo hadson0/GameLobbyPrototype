@@ -30,6 +30,7 @@ public:
 public slots:
     void requestSendLobbyMessage(QString message);
     void requestToggleReady();
+    void onBackButtonClicked();
 
 signals:
     void setReady(QString clientID, bool ready);

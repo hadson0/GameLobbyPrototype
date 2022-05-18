@@ -32,6 +32,7 @@ public slots:
     // Methods
     void toggleReadyRequest();
     void createLobbyRequest();
+    void quitLobbyRequest();
     void joinLobbyRequested(QString lobbyID);
     void sendLobbyMessageRequested(QString message);
     void onLobbyJoined(QString lobbyID, QStringList clients);

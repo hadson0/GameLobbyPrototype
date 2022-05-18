@@ -17,7 +17,7 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
 
     // Back Button
     backButton = new CustomPushButton("Back", this);
-    connect(backButton, &QPushButton::clicked, this, &Screen::backRequest);
+    connect(backButton, &QPushButton::clicked, this, &LobbyScreen::onBackButtonClicked);
 
     // Ready Button
     readyButton = new CustomPushButton("Ready", this);
@@ -62,4 +62,9 @@ void LobbyScreen::requestSendLobbyMessage(QString message) {
 
 void LobbyScreen::requestToggleReady() {
     emit sendRequestMessage("type:toggleReadyRequest;payLoad:0");
+}
+
+void LobbyScreen::onBackButtonClicked() {
+    emit sendRequestMessage("type:quitLobbyRequest;payLoad:0;");
+    emit backRequest();
 }

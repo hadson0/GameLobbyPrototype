@@ -10,6 +10,7 @@ GameManager::GameManager(QObject *parent)
     connect(messageProcessorHandler, &MessageProcessHandler::setReadyRequest, this, &GameManager::setReadyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::createLobbyRequest, this, &GameManager::createLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequest);
+    connect(messageProcessorHandler, &MessageProcessHandler::quitLobbyRequest, this, &GameManager::quitLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::messageLobbyRequest, this, &GameManager::messageLobbyRequest);
 }
 
@@ -63,13 +64,30 @@ void GameManager::joinLobbyRequest(QString lobbyID, QString clientID) {
     }
 }
 
-void GameManager::messageLobbyRequest(QString message, QString lobbyID, QString senderID) {
+void GameManager::quitLobbyRequest(QString lobbyID, QString clientID) {
+    // Checks if the lobby is registered
+    if (lobbyMap.contains(lobbyID)) {
+        LobbyHandler *lobbyHandler = lobbyMap[lobbyID];
+        lobbyHandler->removeClient(clientID);
+
+        // Updates the client list to all the clients in the lobby
+        webSocketHandler->sendTextMessageToClients("type:updatedClientList;payLoad:0;clientList:" + lobbyHandler->getClientListToStr(), lobbyHandler->getClientList());
+    } else {
+        // Informs the client that an error has occurred
+        webSocketHandler->sendTextMessage("type:quitError;payLoad:DNE", clientID);
+    }
+}
+
+void GameManager::messageLobbyRequest(QString message, QString lobbyID, QString clientID) {
     // Checks if the lobby is registered
     if (lobbyMap.contains(lobbyID)) {
         LobbyHandler *lobbyHandler = lobbyMap[lobbyID];
 
         // Sends the message to all the clients in the lobby
-        webSocketHandler->sendTextMessageToClients("type:lobbyMessage;payLoad:" + message + ";senderID:" + senderID, lobbyHandler->getClientList());
+        webSocketHandler->sendTextMessageToClients("type:lobbyMessage;payLoad:" + message + ";senderID:" + clientID, lobbyHandler->getClientList());
+    }else {
+        // Informs the client that an error has occurred
+        webSocketHandler->sendTextMessage("type:lobbyMessageError;payLoad:DNE", clientID);
     }
 }
 

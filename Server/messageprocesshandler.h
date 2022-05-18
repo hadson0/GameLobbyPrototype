@@ -19,6 +19,7 @@ signals:
     void joinLobbyRequest(QString lobbyID, QString clientID);
     void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
     void setReadyRequest(QString lobbyID, QString clientID, bool ready);
+    void quitLobbyRequest(QString lobbyID, QString clientID);
 };
 
 #endif // MESSAGEPROCESSHANDLER_H

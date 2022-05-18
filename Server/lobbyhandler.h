@@ -13,7 +13,6 @@ class LobbyHandler : public QObject {
 public:
     explicit LobbyHandler(QString lobbyID, QObject *parent);
 
-    void addClient(QString clientID);
 
     // Getters
     QStringList getClientList();
@@ -21,8 +20,12 @@ public:
     QStringList getReadyClientsList();
     QString getReadyListToStr();
 
-    //Methods
+    // Setters
     void setReady(QString clientID, bool ready);
+
+    //Methods
+    void addClient(QString clientID);
+    void removeClient(QString clientID);
 
 signals:
     void clientReadyChanged();
