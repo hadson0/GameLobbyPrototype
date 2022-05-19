@@ -31,13 +31,7 @@ const QString getStyleSheet() {
                 "color: qlineargradient(spread:pad, x1:0 y1:1, x2:1 y2:0,"
                 "stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));"
                 "background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #7d20bd, stop:1 #8165f0);"
-            "}"
-
-            "QLineEdit {"
-                "background-color: #E3DDF0; border-radius: 15px;"
-                "padding: 5px;"
-                "color: #110C5A;"
-            "}"            
+            "}"                       
 
             "QScrollBar {"
                 "border: none;"

@@ -13,6 +13,10 @@ WebSocketHandler::~WebSocketHandler() {
     webSocket->close();
 }
 
+bool WebSocketHandler::isValid() {
+    return webSocket->isValid();
+}
+
 void WebSocketHandler::connectToServer(QString hostAddress) {
     qDebug() << "Client App: Connect to server: " << hostAddress;
     webSocket->open(hostAddress);

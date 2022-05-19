@@ -14,6 +14,7 @@ public:
     explicit WebSocketHandler(QObject *parent = nullptr);
     ~WebSocketHandler();
 
+    bool isValid();
     void connectToServer(QString hostAddress);
     void sendMessageToServer(QString message);
 

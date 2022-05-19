@@ -35,9 +35,6 @@ void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     int inputWidth = this->getAvaliableWidth() * 0.5, inputHeight = this->getAvaliableHeight() * 0.2;
     int inputX = (this->getAvaliableWidth()  - inputWidth) / 2, inputY = (this->getAvaliableHeight() - inputHeight) / 2;
     lobbyIDInputEdit->setGeometry(inputX, inputY, inputWidth, inputHeight);
-    QFont font = lobbyIDInputEdit->font();
-    font.setPixelSize(inputHeight * 0.85);
-    lobbyIDInputEdit->setFont(font);
 
     // Instruction label
     int labelWidth = this->getAvaliableWidth(), labelHeight = this->getAvaliableHeight() * 0.12;

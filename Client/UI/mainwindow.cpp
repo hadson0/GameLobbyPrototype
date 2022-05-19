@@ -11,8 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     setSizePolicy(sizePolicy);   
 
     // Creates a Web Socket Handler and connects it to the server
-    webSocketHandler = new WebSocketHandler(this);
-    webSocketHandler->connectToServer("ws://127.0.0.1:8585");
+    webSocketHandler = new WebSocketHandler(this);    
 
     // Creates a game manager and connects it to the Web Socket Handler
     gameManager = new GameManager;
