@@ -8,11 +8,6 @@ CustomLineEdit::CustomLineEdit(QWidget *parent)
                             "padding: 5px;"
                             "color: #110C5A;"
                         "}" );
-
-    // Sets the placeholder text color
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::PlaceholderText, Qt::red);
-    this->setPalette(palette);
 }
 
 void CustomLineEdit::resizeEvent(QResizeEvent *event) {
