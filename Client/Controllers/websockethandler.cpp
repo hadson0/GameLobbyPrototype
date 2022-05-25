@@ -17,8 +17,7 @@ bool WebSocketHandler::isValid() {
     return webSocket->isValid();
 }
 
-void WebSocketHandler::connectToServer(QString hostAddress) {
-    qDebug() << "Client App: Connect to server: " << hostAddress;
+void WebSocketHandler::connectToServer(QString hostAddress) {    
     webSocket->open(hostAddress);
 }
 

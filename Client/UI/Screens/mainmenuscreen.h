@@ -15,7 +15,6 @@ class MainMenuScreen : public Screen {
 
     // Widgets
     CustomLabel *label;
-    CustomLineEdit *nickInput;
     CustomPushButton *playButton, *quitButton;
 
     void resizeEvent(QResizeEvent *event);
@@ -23,8 +22,8 @@ class MainMenuScreen : public Screen {
 public:
     MainMenuScreen(QWidget *parent);
 
-public slots:
-    void onPlayButtonPressed();
+signals:
+    void connectToTheServerRequest();
 };
 
 #endif // MAINMENUSCREEN_H
