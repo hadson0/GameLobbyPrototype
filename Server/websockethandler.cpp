@@ -53,6 +53,8 @@ void WebSocketHandler::onNewSocketConnection() {
     // Returns the next pending connection as a connected QWebSocket object
     QWebSocket *newClient  = webSocketServer->nextPendingConnection();
 
+    qDebug() << "New:" << getIdentifier(newClient);
+
     //Connects signals and slots of the new client
     connect(newClient, &QWebSocket::textMessageReceived, this, &WebSocketHandler::onTextMessageReceived);
     connect(newClient, &QWebSocket::disconnected, this, &WebSocketHandler::onSocketDisconnected);
@@ -79,7 +81,7 @@ void WebSocketHandler::onSocketDisconnected() {
     if (client != nullptr) {
         // Iterates through the map until it finds the client, then disconnect it (delete it)
         for (auto it = clientMap.begin(); it != clientMap.end(); it++) {
-            if (it.value()->localAddress() == client->localAddress()) {
+            if (it.value()->peerAddress() == client->peerAddress() && it.value()->peerPort() == client->peerPort()) {
                 QString clientID = it.key();
                 clientMap.remove(clientID);
                 client->deleteLater();
