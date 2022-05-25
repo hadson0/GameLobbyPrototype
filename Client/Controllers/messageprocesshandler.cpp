@@ -34,19 +34,19 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         clientID = getMessageData(message, "payLoad");
         if (!clientID.isEmpty()) {
             qDebug() << "Client ID received: " << clientID;
-            emit clientIDRegistration(clientID);
+            emit setClientID(clientID);
         }
     }
 
-    // type:newLobbyCreated;payLoad:1234;clientList:4312,856,5678
+    // type:newLobbyCreated;payLoad:1234;clientList:hadson0:4312
     else if (type == "newLobbyCreated" || type == "joinSuccess") {
         lobbyID = getMessageData(message, "payLoad");
         QString clientListString = getMessageData(message, "clientList");
         clientList = clientListString.split(separator);
 
-        qDebug() << "New lobby: " << lobbyID;
 
         if (!lobbyID.isEmpty() && !clientList.isEmpty()) {
+            qDebug() << "New lobby, ID: " << lobbyID;
             emit newLobby(lobbyID, clientList);
         }
     }
@@ -87,18 +87,30 @@ void MessageProcessHandler::processSocketMessage(QString message) {
 
 void MessageProcessHandler::processScreenMessage(QString message) {
     QString type = getMessageData(message, "type");
-    QString newLobbyID = "", lobbyMessage = "";
+    QString nickname = "", newLobbyID = "", lobbyMessage = "";
 
-    // type:createLobbyRequest;payload:0`
+    // type:connectToServerRequest;payLoad:0
+    if (type == "connectToServerRequest") {
+            emit connectToServerRequest();
+
+    }
+
+    // type:createLobbyRequest;payload:0;nickname:hadson0
     if (type == "createLobbyRequest") {
-        emit createLobbyRequest();
+        nickname = getMessageData(message, "nickname");
+
+        if (!nickname.isEmpty()) {
+            emit createLobbyRequest(nickname);
+        }
     }
 
     // type:joinLobbyRequest;payLoad:1234
     else if (type == "joinLobbyRequest") {
         newLobbyID = getMessageData(message, "payLoad");
-        if (!newLobbyID.isEmpty()) {
-            emit joinLobbyRequest(newLobbyID);
+        nickname = getMessageData(message, "nickname");
+
+        if (!newLobbyID.isEmpty() && !nickname.isEmpty()) {
+            emit joinLobbyRequest(newLobbyID, nickname);
         }
     }
 

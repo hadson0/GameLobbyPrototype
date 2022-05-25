@@ -6,7 +6,7 @@ GameManager::GameManager(QObject *parent)
 
     // Socket related message process handler connections
     connect(this, &GameManager::processSocketMessage, messageProcessHandler, &MessageProcessHandler::processSocketMessage);
-    connect(messageProcessHandler, &MessageProcessHandler::clientIDRegistration, this, &GameManager::setClientID);
+    connect(messageProcessHandler, &MessageProcessHandler::setClientID, this, &GameManager::setClientID);
     connect(messageProcessHandler, &MessageProcessHandler::newLobby, this, &GameManager::onLobbyJoined);
     connect(messageProcessHandler, &MessageProcessHandler::clientListUpdated, this, &GameManager::setClientList);
     connect(messageProcessHandler, &MessageProcessHandler::readyListUpdated, this, &GameManager::setReadyList);
@@ -14,6 +14,7 @@ GameManager::GameManager(QObject *parent)
 
     // Screen related message process handler connections
     connect(this, &GameManager::processScreenMessage, messageProcessHandler, &MessageProcessHandler::processScreenMessage);
+    connect(messageProcessHandler, &MessageProcessHandler::connectToServerRequest, this, &GameManager::connectToServerRequest);
     connect(messageProcessHandler, &MessageProcessHandler::createLobbyRequest, this, &GameManager::createLobbyRequest);
     connect(messageProcessHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequested);
     connect(messageProcessHandler, &MessageProcessHandler::quitLobbyRequest, this, &GameManager::quitLobbyRequest);
@@ -32,6 +33,7 @@ QStringList GameManager::getClientList() { return clientMap.keys(); }
 
 void GameManager::setClientID(QString clientID) {
     this->clientID = clientID;
+    emit clientConnected();
 }
 
 void GameManager::setLobbyID(QString newLobbyID) {
@@ -74,12 +76,12 @@ void GameManager::toggleReadyRequest() {
     emit newMessageReadyToSend("type:setReady;payLoad:" + QString::number(ready) + ";lobbyID:" + lobbyID + ";senderID:" + clientID);
 }
 
-void GameManager::createLobbyRequest() {
-    emit newMessageReadyToSend("type:createGame;payLoad:0;senderID:" + clientID);
+void GameManager::createLobbyRequest(QString nickname) {
+    emit newMessageReadyToSend("type:createGame;payLoad:0;senderID:" + clientID + ";nickname:" + nickname);
 }
 
-void GameManager::joinLobbyRequested(QString targetLobbyID) {
-    emit newMessageReadyToSend("type:joinGame;payLoad:" + targetLobbyID + ";senderID:" + clientID);
+void GameManager::joinLobbyRequested(QString targetLobbyID, QString nickname) {
+    emit newMessageReadyToSend("type:joinGame;payLoad:" + targetLobbyID + ";senderID:" + clientID + ";nickname:" + nickname);
 }
 
 void GameManager::sendLobbyMessageRequested(QString message) {

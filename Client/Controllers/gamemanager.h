@@ -29,11 +29,11 @@ public slots:
     void setClientList(QStringList clients);
     void setReadyList(QStringList readyClients);
 
-    // Methods
+    // Methods   
     void toggleReadyRequest();
-    void createLobbyRequest();
+    void createLobbyRequest(QString nickname);
+    void joinLobbyRequested(QString lobbyID, QString nickname);
     void quitLobbyRequest();
-    void joinLobbyRequested(QString lobbyID);
     void sendLobbyMessageRequested(QString message);
     void onLobbyJoined(QString lobbyID, QStringList clients);
 
@@ -41,6 +41,8 @@ signals:
     void processSocketMessage(QString message);
     void processScreenMessage(QString message);
 
+    void connectToServerRequest();
+    void clientConnected();
     void clientListChanged(QStringList clientList);
     void readyListChanged(QStringList readyClients);
     void lobbyIDChanged(QString newLobbyID);

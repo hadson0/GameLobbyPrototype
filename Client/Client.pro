@@ -17,6 +17,7 @@ SOURCES += \
     UI/Components/customlineedit.cpp \
     UI/Components/custompushbutton.cpp \
     UI/Components/customtextedit.cpp \
+    UI/Components/nicknameinputdialog.cpp \
     UI/Screens/joinlobbyscreen.cpp \
     UI/Screens/lobbyscreen.cpp \
     UI/Screens/screen.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     UI/Components/customlineedit.h \
     UI/Components/custompushbutton.h \
     UI/Components/customtextedit.h \
+    UI/Components/nicknameinputdialog.h \
     UI/Screens/joinlobbyscreen.h \
     UI/Screens/lobbyscreen.h \
     UI/Screens/screen.h \

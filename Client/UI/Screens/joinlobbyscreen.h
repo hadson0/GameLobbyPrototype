@@ -1,20 +1,21 @@
 #ifndef JOINLOBBYSCREEN_H
 #define JOINLOBBYSCREEN_H
 
-#include <QIntValidator>
-#include <QLineEdit>
+#include <QMessageBox>
 
 #include "screen.h"
 #include "UI/Components/customlabel.h"
 #include "UI/Components/custompushbutton.h"
+#include "UI/Components/customlineedit.h"
+#include "UI/Components/nicknameinputdialog.h"
 
 class JoinLobbyScreen : public Screen {
     Q_OBJECT
 
     // Widgets
-    CustomLabel *instructionLabel;
+    CustomLabel *label;
     CustomPushButton *joinButton, *backButton;
-    QLineEdit *lobbyIDInputEdit;
+    CustomLineEdit *lobbyIDInput;
 
     void resizeEvent(QResizeEvent *event);
 

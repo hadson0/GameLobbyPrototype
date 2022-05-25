@@ -45,7 +45,14 @@ void SelectionScreen::resizeEvent(QResizeEvent *event) {
 }
 
 void SelectionScreen::onCreateLobbyCklicked() {
-    emit sendRequestMessage("type:createLobbyRequest;payload:0");
+    QString nickname = "";
+    nickname = NicknameInputDialog::getNickname(this);
+
+    if (!nickname.isEmpty()) {
+        emit sendRequestMessage("type:createLobbyRequest;payload:0;nickname:" + nickname);
+    } else {
+        QMessageBox::warning(this, "Error", "Nickname field cannot be left blank.");
+    }
 }
 
 void SelectionScreen::onJoinLobbyButtonClicked() {

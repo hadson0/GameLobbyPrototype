@@ -49,9 +49,9 @@ void ClientListView::paintEvent(QPaintEvent *event) {
     }
 }
 
-void ClientListView::addClientItem(QString clientID) {
+void ClientListView::addClientItem(QString clientID, QString nickname) {
     if (!clientMap.contains(clientID)) {
-        clientMap[clientID] = new ClientListItem(clientID, this);;
+        clientMap[clientID] = new ClientListItem(nickname, this);
     }
 }
 
@@ -70,17 +70,26 @@ void ClientListView::setReady(QString clientID, bool ready) {
 
 // Adds the clients to the list
 void ClientListView::onClientListChanged(QStringList newClientList) {
+    static QRegularExpression separator(":");
+    QStringList clientIDs, clientNicknames;
+
+    for (const QString &client : newClientList) {
+        QStringList clientInfo = client.split(separator);
+        clientIDs.push_back(clientInfo[0]);
+        clientNicknames.push_back(clientInfo[1]);
+    }
+
     // Removes the clients who left the lobby
     QStringList oldClientList = clientMap.keys();
     for (const QString &clientID : oldClientList) {
-        if (!newClientList.contains(clientID)) {
+        if (!clientIDs.contains(clientID)) {
             removeClientItem(clientID);
         }
     }
 
     // Adds the new clients
-    for (const QString &clientID : newClientList) {
-        addClientItem(clientID);
+    for (qsizetype i = 0; i < newClientList.size(); i++) {
+        addClientItem(clientIDs[i], clientNicknames[i]);
     }
 
     this->update();

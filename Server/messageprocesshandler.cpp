@@ -21,27 +21,29 @@ QString getMessageData(QString message, QString dataIdentifier) {
 
 void MessageProcessHandler::processSocketMessage(QString message) {
     QString type = getMessageData(message, "type");
-    QString lobbyID = "", senderID = "", payLoad = "";
+    QString lobbyID = "", senderID = "", payLoad = "", nickname = "";
 
-    //type:createGame;payLoad:0000;senderID:1234
+    //type:createGame;payLoad:0000;senderID:1234;nickname:hadson0
     if (type == "createGame") {
-
         senderID = getMessageData(message, "senderID");
+        nickname = getMessageData(message, "nickname");
+
         if (!senderID.isEmpty()) {
             qDebug() << "Create game request, client ID: " << senderID;
-            emit createLobbyRequest(senderID);
+            emit createLobbyRequest(senderID, nickname);
         }
     }
 
-    //type:joinGame;payLoad:1234;sender:5678
+    //type:joinGame;payLoad:1234;sender:5678;nickname:hadson0
     else if (type == "joinGame") {
 
         lobbyID = getMessageData(message, "payLoad");
         senderID = getMessageData(message, "senderID");
+        nickname = getMessageData(message, "nickname");
 
         if (!lobbyID.isEmpty() && !senderID.isEmpty()) {
             qDebug() << "Join game request, client ID: " << senderID;
-            emit joinLobbyRequest(lobbyID, senderID);
+            emit joinLobbyRequest(lobbyID, senderID, nickname);
         }
     }
 

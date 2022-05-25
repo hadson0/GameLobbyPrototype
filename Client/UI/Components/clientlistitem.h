@@ -14,7 +14,7 @@ class ClientListItem : public BackgroundedFrame {
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit ClientListItem(QString clientID, QWidget *parent = nullptr);
+    explicit ClientListItem(QString nickname, QWidget *parent = nullptr);
 
     // Getters
     bool isReady();

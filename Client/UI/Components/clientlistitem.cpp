@@ -1,11 +1,11 @@
 #include "clientlistitem.h"
 
-ClientListItem::ClientListItem(QString uniqueID, QWidget *parent)
+ClientListItem::ClientListItem(QString nickname, QWidget *parent)
     : BackgroundedFrame{parent}, defaultColor(172, 170, 177), readyColor(57, 153, 72), ready(false) {
     setColor(defaultColor);
 
     // Label
-    clientIDLabel = new CustomLabel(uniqueID, this);
+    clientIDLabel = new CustomLabel(nickname, this);
     clientIDLabel->setStyleSheet("*{color: #E3DDF0}");
 
     this->show();

@@ -6,13 +6,14 @@ JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
     setSpacing(25);
 
     // Instruction label
-    instructionLabel = new CustomLabel("Lobby ID", this);
+    label = new CustomLabel("Join Lobby", this);
 
-    // Lobby ID Input
-    lobbyIDInputEdit = new QLineEdit(this);
-    lobbyIDInputEdit->setValidator(new QIntValidator(0, 9999, this));
-    lobbyIDInputEdit->setAlignment(Qt::AlignCenter);
-    connect(lobbyIDInputEdit, &QLineEdit::returnPressed, this, &JoinLobbyScreen::onJoinButtonClicked);
+    // Lobby ID input
+    lobbyIDInput = new CustomLineEdit(this);
+    lobbyIDInput->setPlaceholderText("Lobby ID");
+    lobbyIDInput->setValidator(new QIntValidator(0, 9999, this));
+    lobbyIDInput->setAlignment(Qt::AlignCenter);
+    connect(lobbyIDInput, &QLineEdit::returnPressed, this, &JoinLobbyScreen::onJoinButtonClicked);
 
     // Back Button
     backButton = new CustomPushButton("Back", this);
@@ -26,32 +27,35 @@ JoinLobbyScreen::JoinLobbyScreen(QWidget *parent)
 void JoinLobbyScreen::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);
 
+    // Label
+    int labelWidth = this->width(), labelHeight = this->height() * 0.13;
+    int labelX = 0, labelY = this->height() / 4 - labelHeight / 2;
+    label->setGeometry(labelX, labelY, labelWidth, labelHeight);
+
     // Back Button
     int backButtonX = this->getPadding(), backButtonY = this->getPadding();
     int backButtonWidth = this->getAvaliableWidth() * 0.08, backButtonHeight = this->getAvaliableHeight() * 0.08;
     backButton->setGeometry(backButtonX, backButtonY, backButtonWidth, backButtonHeight);
 
     // Lobby ID Input
-    int inputWidth = this->getAvaliableWidth() * 0.5, inputHeight = this->getAvaliableHeight() * 0.2;
-    int inputX = (this->getAvaliableWidth()  - inputWidth) / 2, inputY = (this->getAvaliableHeight() - inputHeight) / 2;
-    lobbyIDInputEdit->setGeometry(inputX, inputY, inputWidth, inputHeight);
-
-    // Instruction label
-    int labelWidth = this->getAvaliableWidth(), labelHeight = this->getAvaliableHeight() * 0.12;
-    int labelX = 0, labelY = (this->getAvaliableHeight() - inputHeight) / 2 - this->getSpacing() - labelHeight;
-    instructionLabel->setGeometry(labelX, labelY, labelWidth, labelHeight);
+    int inputWidth = this->getAvaliableWidth() * 0.5, inputHeight = this->getAvaliableHeight() * 0.15;
+    int lobbyIDInputX = (this->getAvaliableWidth()  - inputWidth) / 2, lobbyIDInputY = (this->getAvaliableHeight()) / 2;
+    lobbyIDInput->setGeometry(lobbyIDInputX, lobbyIDInputY, inputWidth, inputHeight);
 
     // Join Button
     int joinButtonWidth = this->getAvaliableWidth() * 0.25, joinButtonHeight = this->getAvaliableHeight() * 0.15;
-    int joinButtonX =  (this->getAvaliableWidth() - joinButtonWidth) / 2, joinButtonY = inputY + inputHeight + this->getSpacing();
+    int joinButtonX =  (this->getAvaliableWidth() - joinButtonWidth) / 2, joinButtonY = lobbyIDInputY + inputHeight + this->getSpacing();
     joinButton->setGeometry(joinButtonX, joinButtonY, joinButtonWidth, joinButtonHeight);
 }
 
 void JoinLobbyScreen::onJoinButtonClicked() {
-    QString newLobbyID = "";
-    newLobbyID = lobbyIDInputEdit->text();
+    QString newLobbyID = "", nickname = "";
+    newLobbyID = lobbyIDInput->text();
+    nickname = NicknameInputDialog::getNickname(this);
 
-    if (newLobbyID.length() == 4) {
-        emit sendRequestMessage("type:joinLobbyRequest;payLoad:" + newLobbyID);
+    if (newLobbyID.length() == 4 && !nickname.isEmpty()) {
+        emit sendRequestMessage("type:joinLobbyRequest;payLoad:" + newLobbyID + ";nickname:" + nickname);
+    } else {
+        QMessageBox::warning(this, "Error", "Please fill in all fields correctly.");
     }
 }

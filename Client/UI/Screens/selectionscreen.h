@@ -2,11 +2,12 @@
 #define SELECTIONSCREEN_H
 
 #include <QApplication>
+#include <QMessageBox>
 
 #include "screen.h"
 #include "UI/Components/customlabel.h"
 #include "UI/Components/custompushbutton.h"
-
+#include "UI/Components/nicknameinputdialog.h"
 
 class SelectionScreen : public Screen {
     Q_OBJECT
