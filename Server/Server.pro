@@ -7,16 +7,18 @@ CONFIG -= app_bundle
 
 SOURCES += \
         gamemanager.cpp \
-        lobbyhandler.cpp \
+        lobby.cpp \
         main.cpp \
         messageprocesshandler.cpp \
+        user.cpp \
         websockethandler.cpp
         main.cpp \
 
 HEADERS += \
         gamemanager.h \
-        lobbyhandler.h \
+        lobby.h \
         messageprocesshandler.h \
+        user.h \
         websockethandler.h
 
 # Default rules for deployment.
