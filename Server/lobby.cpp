@@ -1,25 +1,27 @@
-#include "lobbyhandler.h"
+#include "lobby.h"
 
-LobbyHandler::LobbyHandler(QString lobbyID, QObject *parent)
-    : QObject{parent} , lobbyID(lobbyID), clientMap(QMap<QString, bool>()) {}
+Lobby::Lobby(QString lobbyID, QObject *parent)
+    : QObject{parent} , lobbyID(lobbyID) {}
 
 // Registers the client if it isn't registered and resets all the ready status
-void LobbyHandler::addClient(QString clientID) {
+void Lobby::addClient(QString clientID, QString nickname) {
     // Adds the client
     if (!clientMap.contains(clientID)) {
-        clientMap[clientID] = false;
+        User *newUser = new User(clientID, nickname, this);
+        newUser->setReady(false);
+        clientMap[clientID] = newUser;
     }
 
     // Set all the ready status to false
     for (const QString &client : getClientList()) {
-        clientMap[client] = false;
+        clientMap[client]->setReady(false);
     }
 
     emit clientReadyChanged();
 }
 
 // Remove the client from the lobby and resets all the ready status
-void LobbyHandler::removeClient(QString clientID) {
+void Lobby::removeClient(QString clientID) {
     // removes the client
     if (clientMap.contains(clientID)) {
         clientMap.remove(clientID);
@@ -27,7 +29,7 @@ void LobbyHandler::removeClient(QString clientID) {
 
     // Set all the ready status to false
     for (const QString &client : getClientList()) {
-        clientMap[client] = false;
+        clientMap[client]->setReady(false);
     }
 
     emit clientReadyChanged();
@@ -35,28 +37,29 @@ void LobbyHandler::removeClient(QString clientID) {
 
 
 // Returns a QStringList containing all the clientsIDs
-QStringList LobbyHandler::getClientList() {
+QStringList Lobby::getClientList() {
     return clientMap.keys();
 }
 
-// Returns a QString containing all the clientsIDs, separated by ",". Ex.: 1234,5678,4312
-QString LobbyHandler::getClientListToStr() {
-    QString clientString;
+// Returns a QString containing the clients information. Ex.: 1234:hadson0,5678:whoamI,4312:user_1
+QString Lobby::getClientsInfo() {
+    QString clientsInfo;
 
-    for (auto &client : getClientList()) {
-        clientString.append(client + ",");
+    QMap<QString, User *>::iterator it = clientMap.begin();
+    for (; it != clientMap.end(); it++) {
+        clientsInfo.append(it.key() + ":" + it.value()->getNickname() + ",");
     }
-    clientString.chop(1);
+    clientsInfo.chop(1);
 
-    return clientString;
+    return clientsInfo;
 }
 
-QStringList LobbyHandler::getReadyClientsList() {
+QStringList Lobby::getReadyClientIDList() {
     QStringList readyClientsList;
 
-    QMap<QString, bool>::iterator it = clientMap.begin();
+    QMap<QString, User *>::iterator it = clientMap.begin();
     for (; it != clientMap.end(); it++) {
-        if (it.value()) { // If the client is ready
+        if (it.value()->isReady()) { // If the client is ready
             readyClientsList.append(it.key());
         }
     }
@@ -64,10 +67,10 @@ QStringList LobbyHandler::getReadyClientsList() {
     return readyClientsList;
 }
 
-QString LobbyHandler::getReadyListToStr() {
+QString Lobby::getReadyListToStr() {
     QString readyClients;
 
-    for (const QString &clientID : getReadyClientsList()) {
+    for (const QString &clientID : getReadyClientIDList()) {
         readyClients.append(clientID + ",");
     }
     readyClients.chop(1);
@@ -75,9 +78,9 @@ QString LobbyHandler::getReadyListToStr() {
     return readyClients;
 }
 
-void LobbyHandler::setReady(QString clientID, bool ready) {
+void Lobby::setReady(QString clientID, bool ready) {
     if (clientMap.contains(clientID)) {
-        clientMap[clientID] = ready;
+        clientMap[clientID]->setReady(ready);
 
         emit clientReadyChanged();
     }

@@ -1,34 +1,35 @@
-#ifndef LOBBYHANDLER_H
-#define LOBBYHANDLER_H
+#ifndef LOBBY_H
+#define LOBBY_H
 
 #include <QObject>
 #include <QMap>
 
-class LobbyHandler : public QObject {
+#include "user.h"
+
+class Lobby : public QObject {
     Q_OBJECT
 
     QString lobbyID;
-    QMap<QString, bool> clientMap; // <ClientID, isReady>
+    QMap<QString, User *> clientMap; // <ClientID, User>
 
 public:
-    explicit LobbyHandler(QString lobbyID, QObject *parent);
-
+    explicit Lobby(QString lobbyID, QObject *parent);
 
     // Getters
     QStringList getClientList();
-    QString getClientListToStr();
-    QStringList getReadyClientsList();
+    QString getClientsInfo();
+    QStringList getReadyClientIDList();
     QString getReadyListToStr();
 
     // Setters
     void setReady(QString clientID, bool ready);
 
     //Methods
-    void addClient(QString clientID);
+    void addClient(QString clientID, QString nickname);
     void removeClient(QString clientID);
 
 signals:
     void clientReadyChanged();
 };
 
-#endif // LOBBYHANDLER_H
+#endif // LOBBY_H
