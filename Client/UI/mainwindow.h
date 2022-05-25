@@ -1,12 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDebug>
+
 #include <QMainWindow>
 #include <QPainter>
 #include <QPaintEvent>
-#include <QDebug>
 #include <QApplication>
 #include <QStack>
+#include <QMessageBox>
 
 #include "Controllers/gamemanager.h"
 #include "Controllers/websockethandler.h"
@@ -35,5 +37,7 @@ public:
 
 public slots:
     void onBackRequested();
+    void onConnectToServerRequest();
+    void onClientConnected();
 };
 #endif // MAINWINDOW_H

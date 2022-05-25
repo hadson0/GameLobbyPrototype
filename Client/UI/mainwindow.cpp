@@ -14,10 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
     webSocketHandler = new WebSocketHandler(this);    
 
     // Creates a game manager and connects it to the Web Socket Handler
-    gameManager = new GameManager;
-    connect(webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, gameManager, &GameManager::processSocketMessage);    
+    gameManager = new GameManager(this);
+    connect(webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, gameManager, &GameManager::processSocketMessage);
     connect(gameManager, &GameManager::newMessageReadyToSend, webSocketHandler, &WebSocketHandler::sendMessageToServer);
-    connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);    
+    connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);
+    connect(gameManager, &GameManager::clientConnected, this, &MainWindow::onClientConnected);
 }
 
 // Hides the old screen and display the one mentioned in the argument
@@ -26,6 +27,7 @@ void MainWindow::displayMenuScreen(QString destinationMenuScreen) {
 
     if (destinationMenuScreen == "MainMenuScreen") {
         newScreen = new MainMenuScreen(this);
+        connect(qobject_cast<MainMenuScreen *>(newScreen), &MainMenuScreen::connectToTheServerRequest, this, &MainWindow::onConnectToServerRequest);
     } else if (destinationMenuScreen == "SelectionScreen") {
         newScreen = new SelectionScreen(this);
     } else if (destinationMenuScreen == "JoinLobbyScreen") {
@@ -45,8 +47,6 @@ void MainWindow::displayMenuScreen(QString destinationMenuScreen) {
 
         menuScreenStack.push(newScreen);
         menuScreenStack.top()->show();
-    } else {
-        qDebug() << "Error while displaying the screen: " + destinationMenuScreen;
     }
 }
 
@@ -71,13 +71,30 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
 void MainWindow::onBackRequested() {
     // Deletes the current screen
     if (lobbyScreen != nullptr) { // If the current screen is the lobby screen
-        delete lobbyScreen;
-        lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
+        // Asks the user if he wants to leave the lobby
+        int answer = QMessageBox::warning(this, "Leave lobby", "Are you sure you want to leave the lobby?",
+                                       QMessageBox::Ok | QMessageBox::Cancel);
+
+        if (answer == QMessageBox::Ok) {
+            delete lobbyScreen;
+            lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
+            menuScreenStack.top()->show();
+        }
     } else {
         delete menuScreenStack.top();
         menuScreenStack.pop();
+        menuScreenStack.top()->show();
     }
+}
 
-    // Shows the previous screen
-    menuScreenStack.top()->show();
+void MainWindow::onConnectToServerRequest() {
+    try {
+        webSocketHandler->connectToServer("ws://127.0.0.1:8585");
+    } catch (int e) {
+        QMessageBox::warning(this, "Error", "Connection to the server has failed.");
+    }
+}
+
+void MainWindow::onClientConnected() {
+    displayMenuScreen("SelectionScreen");
 }
