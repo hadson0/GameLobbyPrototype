@@ -10,8 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     sizePolicy.setHeightForWidth(true);
     setSizePolicy(sizePolicy);   
 
-    // Creates a Web Socket Handler and connects it to the server
+    // Creates a Web Socket Handler
     webSocketHandler = new WebSocketHandler(this);    
+    connect(webSocketHandler, &WebSocketHandler::disconnected, this, &MainWindow::onClientDisconnected);
 
     // Creates a game manager and connects it to the Web Socket Handler
     gameManager = new GameManager(this);
@@ -67,6 +68,46 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
     lobbyScreen->show();
 }
 
+void MainWindow::onErrorOccurrence(QString error) {
+    // "joinError" || "quitError" || "lobbyMessageError" || "connectionError" || "nicknameError"
+    if (error == "joinError") {
+        QMessageBox::warning(this, "Error", "An error occurred while trying to join the lobby");
+    } else if (error == "lobbyMessageError") {
+        QMessageBox::warning(this, "Error", "An error occurred while trying to send a message to the lobby");
+    } else if (error == "nicknameError") {
+        QMessageBox::warning(this, "Error", "Nickname field cannot be left blank.");
+    } else if (error == "quitError") {
+        int answer = QMessageBox::warning(this, "Error", "An unexpected error has occurred.\n "
+                                                         "You will be disconnected from the lobby");
+
+        // Closes the lobby screen
+        if (lobbyScreen != nullptr && answer == QMessageBox::Ok) {
+            delete lobbyScreen;
+            lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
+            menuScreenStack.top()->show();
+        }
+    } else if (error == "connectionError") {
+        int answer = QMessageBox::warning(this, "Error", "Connection to server failed.");
+
+        // Returns to the main menu screen
+        if (answer == QMessageBox::Ok) {
+            // If the lobby screen is open, closes it
+            if (lobbyScreen != nullptr) {
+                delete lobbyScreen;
+                lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
+            }
+
+            // Closes all screens
+            while (!menuScreenStack.isEmpty()) {
+                delete menuScreenStack.top();
+                menuScreenStack.pop();
+            }
+
+            this->displayMenuScreen("MainMenuScreen");
+        }
+    }
+}
+
 // Goes to the previous screen
 void MainWindow::onBackRequested() {
     // Deletes the current screen
@@ -90,11 +131,15 @@ void MainWindow::onBackRequested() {
 void MainWindow::onConnectToServerRequest() {
     try {
         webSocketHandler->connectToServer("ws://127.0.0.1:8585");
-    } catch (int e) {
-        QMessageBox::warning(this, "Error", "Connection to the server has failed.");
+    } catch (...) {
+        this->onErrorOccurrence("connectionError");
     }
 }
 
 void MainWindow::onClientConnected() {
     displayMenuScreen("SelectionScreen");
+}
+
+void MainWindow::onClientDisconnected() {
+    this->onErrorOccurrence("connectionError");
 }

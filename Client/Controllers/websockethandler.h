@@ -24,6 +24,7 @@ public slots:
 
 signals:
     void newMessageReadyForProcessing(QString message);   
+    void disconnected();
 };
 
 #endif // WEBSOCKETHANDLER_H

@@ -32,6 +32,8 @@ signals:
     void sendLobbyMessageRequest(QString message);
     void toggleReadyRequest();
     void quitLobbyRequest();
+
+    void error(QString error);
 };
 
 #endif // MESSAGEPROCESSHANDLER_H

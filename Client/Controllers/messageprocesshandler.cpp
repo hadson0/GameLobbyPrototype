@@ -83,6 +83,13 @@ void MessageProcessHandler::processSocketMessage(QString message) {
             emit readyListUpdated(clientList);
         }
     }
+
+    // Errors
+
+    // type:joinError;payLoad:DNE
+    else if (type == "joinError" || type == "quitError" || type == "lobbyMessageError") {
+        emit error(type);
+    }
 }
 
 void MessageProcessHandler::processScreenMessage(QString message) {

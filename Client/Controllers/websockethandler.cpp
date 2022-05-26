@@ -7,6 +7,7 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     // Connects signals and slots
     connect(webSocket, &QWebSocket::connected, this, &WebSocketHandler::onConnected);
     connect(webSocket, &QWebSocket::textFrameReceived, this, &WebSocketHandler::onTextMessageReceived);
+    connect(webSocket, &QWebSocket::disconnected, this, &WebSocketHandler::disconnected);
 }
 
 WebSocketHandler::~WebSocketHandler() {

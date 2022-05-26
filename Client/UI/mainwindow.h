@@ -34,10 +34,12 @@ public:
 
     void displayMenuScreen(QString targetScreen);
     void displayLobbyScreen(QString lobbyID);
+    void onErrorOccurrence(QString error);
 
 public slots:
     void onBackRequested();
     void onConnectToServerRequest();
     void onClientConnected();
+    void onClientDisconnected();
 };
 #endif // MAINWINDOW_H

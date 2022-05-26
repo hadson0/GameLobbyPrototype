@@ -51,6 +51,8 @@ signals:
     void newLobbyMessageRecieved(QString message);
     void newMessageReadyToSend(QString message);
     void inGameLobby();
+
+    void error(QString error);
 };
 
 #endif // GAMEMANAGER_H

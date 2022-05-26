@@ -20,6 +20,8 @@ GameManager::GameManager(QObject *parent)
     connect(messageProcessHandler, &MessageProcessHandler::quitLobbyRequest, this, &GameManager::quitLobbyRequest);
     connect(messageProcessHandler, &MessageProcessHandler::sendLobbyMessageRequest, this, &GameManager::sendLobbyMessageRequested);
     connect(messageProcessHandler, &MessageProcessHandler::toggleReadyRequest, this, &GameManager::toggleReadyRequest);
+
+    connect(messageProcessHandler, &MessageProcessHandler::error, this, &GameManager::error);
 }
 
 GameManager::~GameManager() {
