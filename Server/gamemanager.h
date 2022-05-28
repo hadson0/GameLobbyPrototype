@@ -17,9 +17,18 @@ class GameManager : public QObject {
     WebSocketHandler *webSocketHandler;
     MessageProcessHandler *messageProcessorHandler;
 
+    GameManager(QObject *parent = nullptr);
+
 public:
-    explicit GameManager(QObject *parent = nullptr);
-    ~GameManager();
+    GameManager(const GameManager &obj) = delete;
+    GameManager(GameManager &&obj) = delete;
+    GameManager operator=(GameManager &obj) = delete;
+    GameManager operator=(GameManager &&obj) = delete;
+
+    static GameManager& getInstance() {
+        static GameManager instance;
+        return instance;
+    }
 
     QString generateRandomID();
 

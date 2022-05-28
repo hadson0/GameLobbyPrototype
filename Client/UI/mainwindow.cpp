@@ -11,11 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
     setSizePolicy(sizePolicy);   
 
     // Creates a Web Socket Handler
-    webSocketHandler = new WebSocketHandler(this);    
+    webSocketHandler = WebSocketHandler::getInstance(this);
     connect(webSocketHandler, &WebSocketHandler::disconnected, this, &MainWindow::onClientDisconnected);
 
     // Creates a game manager and connects it to the Web Socket Handler
-    gameManager = new GameManager(this);
+    gameManager = GameManager::getInstance(this);
     connect(webSocketHandler, &WebSocketHandler::newMessageReadyForProcessing, gameManager, &GameManager::processSocketMessage);
     connect(gameManager, &GameManager::newMessageReadyToSend, webSocketHandler, &WebSocketHandler::sendMessageToServer);
     connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);

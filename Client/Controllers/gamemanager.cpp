@@ -1,5 +1,7 @@
 #include "gamemanager.h"
 
+GameManager *GameManager::instance = nullptr;
+
 GameManager::GameManager(QObject *parent)
     : QObject{parent}, clientID(""), lobbyID("") {
     messageProcessHandler = new MessageProcessHandler(this);
@@ -22,10 +24,6 @@ GameManager::GameManager(QObject *parent)
     connect(messageProcessHandler, &MessageProcessHandler::toggleReadyRequest, this, &GameManager::toggleReadyRequest);
 
     connect(messageProcessHandler, &MessageProcessHandler::error, this, &GameManager::error);
-}
-
-GameManager::~GameManager() {
-    messageProcessHandler->deleteLater();
 }
 
 QString GameManager::getLobbyID() { return lobbyID; }

@@ -2,7 +2,7 @@
 
 GameManager::GameManager(QObject *parent)
     : QObject{parent} {
-    webSocketHandler = new WebSocketHandler(this);
+    webSocketHandler = WebSocketHandler::getInstance(this);
     messageProcessorHandler = new MessageProcessHandler(this);
 
     //Coneccts signals and slots
@@ -12,11 +12,6 @@ GameManager::GameManager(QObject *parent)
     connect(messageProcessorHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::quitLobbyRequest, this, &GameManager::quitLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::messageLobbyRequest, this, &GameManager::messageLobbyRequest);
-}
-
-GameManager::~GameManager() {
-    // Guarantees that memory will be deallocated
-    webSocketHandler->deleteLater();
 }
 
 // Generates a QString composed of 4 random numbers. Ex.: "1234"

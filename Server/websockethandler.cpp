@@ -1,5 +1,7 @@
 #include "websockethandler.h"
 
+WebSocketHandler *WebSocketHandler::instance = nullptr;
+
 WebSocketHandler::WebSocketHandler(QObject *parent)
     : QObject{parent} {
     webSocketServer = new QWebSocketServer("GamePrototypeServer",  QWebSocketServer::NonSecureMode, this);
@@ -11,6 +13,7 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     if (webSocketServer->listen(QHostAddress::Any, 8585)) {
         qDebug() << "Server is running";
     } else {
+        throw;
         qDebug() << "Error starting to listen for new connections";
     }
 }

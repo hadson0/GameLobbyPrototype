@@ -14,9 +14,22 @@ class GameManager : public QObject {
 
     MessageProcessHandler *messageProcessHandler;
 
+    static GameManager *instance;
+    GameManager(QObject *parent = nullptr);
+
 public:
-    explicit GameManager(QObject *parent = nullptr);
-    ~GameManager();
+    GameManager(const GameManager &obj) = delete;
+    GameManager(const GameManager &&obj) = delete;
+    GameManager operator=(GameManager &obj) = delete;
+    GameManager operator=(GameManager &&obj) = delete;
+
+    static GameManager *getInstance(QObject *parent = nullptr) {
+        if (instance == nullptr) {
+            instance = new GameManager(parent);
+        }
+
+        return instance;
+    }
 
     // Getters
     QString getLobbyID();

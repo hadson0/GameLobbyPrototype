@@ -14,9 +14,23 @@ class WebSocketHandler : public QObject {
     QWebSocketServer *webSocketServer;
     QMap<QString, QWebSocket *> clientMap;
 
+    WebSocketHandler(QObject *parent = nullptr);
+    static WebSocketHandler *instance;
+
 public:
-    explicit WebSocketHandler(QObject *parent = nullptr);
+    WebSocketHandler(const WebSocketHandler &obj) = delete;
+    WebSocketHandler(const WebSocketHandler &&obj) = delete;
+    WebSocketHandler operator=(WebSocketHandler &obj) = delete;
+    WebSocketHandler operator=(WebSocketHandler &&obj) = delete;
     ~WebSocketHandler();
+
+    static WebSocketHandler *getInstance(QObject *parent = nullptr) {
+        if (instance == nullptr) {
+            instance = new WebSocketHandler(parent);
+        }
+
+        return instance;
+    }
 
     QString generateRandomID();
     void sendTextMessage(QString message, QString clientID);

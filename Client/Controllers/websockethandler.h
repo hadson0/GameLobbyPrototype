@@ -10,9 +10,23 @@ class WebSocketHandler : public QObject {
 
     QWebSocket *webSocket;
 
+    static WebSocketHandler *instance;
+    WebSocketHandler(QObject *parent = nullptr);
+
 public:
-    explicit WebSocketHandler(QObject *parent = nullptr);
+    WebSocketHandler(const WebSocketHandler &obj) = delete;
+    WebSocketHandler(const WebSocketHandler &&obj) = delete;
+    WebSocketHandler operator=(WebSocketHandler &obj) = delete;
+    WebSocketHandler operator=(WebSocketHandler &&obj) = delete;
     ~WebSocketHandler();
+
+    static WebSocketHandler *getInstance(QObject *parent = nullptr) {
+        if (instance == nullptr) {
+            instance = new WebSocketHandler(parent);
+        }
+
+        return instance;
+    }
 
     bool isValid();
     void connectToServer(QString hostAddress);

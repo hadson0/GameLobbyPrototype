@@ -1,5 +1,7 @@
 #include "websockethandler.h"
 
+WebSocketHandler *WebSocketHandler::instance = nullptr;
+
 WebSocketHandler::WebSocketHandler(QObject *parent)
     : QObject{parent} {
     webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this);
@@ -18,7 +20,7 @@ bool WebSocketHandler::isValid() {
     return webSocket->isValid();
 }
 
-void WebSocketHandler::connectToServer(QString hostAddress) {    
+void WebSocketHandler::connectToServer(QString hostAddress) {
     webSocket->open(hostAddress);
 }
 
