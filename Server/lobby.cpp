@@ -7,7 +7,7 @@ Lobby::Lobby(QString lobbyID, QObject *parent)
 void Lobby::addClient(QString clientID, QString nickname) {
     // Adds the client
     if (!clientMap.contains(clientID)) {
-        User *newUser = new User(clientID, nickname, this);
+        User *newUser = new User(nickname, this);
         newUser->setReady(false);
         clientMap[clientID] = newUser;
     }
