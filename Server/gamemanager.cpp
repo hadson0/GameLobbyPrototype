@@ -105,11 +105,15 @@ void GameManager::onUserListChanged(QString users, QStringList clientList) {
         // Update the user list to all the clients in the lobby
          webSocketHandler->sendTextMessage("type:updatedUserList;payLoad:0;userList:" + users, clientList);
     } else {
-        // Delete the lobby
-        Lobby *lobby = qobject_cast<Lobby *>(sender());
-        QString lobbyID = lobby->getID();
-        lobbyMap[lobbyID]->deleteLater();
-        lobbyMap.remove(lobbyID);
+        try {
+            // Delete the lobby
+            Lobby *lobby = qobject_cast<Lobby *>(sender());
+            QString lobbyID = lobby->getID();
+            lobbyMap[lobbyID]->deleteLater();
+            lobbyMap.remove(lobbyID);
+        } catch (...) {
+            qDebug() << "Error deleting lobby";
+        }
     }
 }
 
