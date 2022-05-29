@@ -9,7 +9,6 @@ class GameManager : public QObject {
     Q_OBJECT
 
     QString clientID; // Lobby host ID (who created the lobby)
-    QMap<QString, bool> userMap; // <nickname, isReady>
     QString lobbyID, nickname;
 
     MessageProcessHandler *messageProcessHandler;
@@ -33,14 +32,11 @@ public:
 
     // Getters
     QString getLobbyID();
-    QStringList getUserList();
 
 public slots:    
     // Setters
     void setClientID(QString clientID);
     void setLobbyID(QString lobbyID);
-    void setUserList(QStringList newUserList);
-    void setReadyList(QStringList readyUserList);
 
     // Methods   
     void toggleReadyRequest();
@@ -64,7 +60,7 @@ signals:
 
     void newLobbyMessageRecieved(QString message, QString senderNick);
     void newMessageReadyToSend(QString message);
-    void inGameLobby();
+    void joinedLobby();
 
     void error(QString error);
 };

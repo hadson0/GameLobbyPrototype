@@ -8,16 +8,17 @@ void Lobby::addUser(QString clientID, QString nickname) {
     // Adds the user
     if (!userMap.contains(clientID)) {
         User *newUser = new User(nickname, this);
-        newUser->setReady(false);
         userMap[clientID] = newUser;
     }
 
     // Set all the ready status to false
     for (const QString &user : getClientList()) {
-        userMap[user]->setReady(false);
+        if (userMap[user]->isReady()) {
+            userMap[user]->toggleReady();
+        }
     }
 
-    emit userReadyChanged();
+    emit readyListChanged(getReadyUsersStr(), getClientList());
 }
 
 // Remove the user from the lobby and resets all the ready status
@@ -29,10 +30,12 @@ void Lobby::removeUser(QString clientID) {
 
     // Set all the ready status to false
     for (const QString &user : getClientList()) {
-        userMap[user]->setReady(false);
+        if (userMap[user]->isReady()) {
+            userMap[user]->toggleReady();
+        }
     }
 
-    emit userReadyChanged();
+    emit readyListChanged(getReadyUsersStr(), getClientList());
 }
 
 bool Lobby::containsNickname(QString nickname) {
@@ -52,7 +55,7 @@ QStringList Lobby::getClientList() { return userMap.keys(); }
 QString Lobby::getUserNick(QString clientID) { return userMap[clientID]->getNickname(); }
 
 // Returns a QString containing the user nicknames. Ex.: hadson0,whoamI,user_1
-QString Lobby::getUserNicksStr() {
+QString Lobby::getUsersToStr() {
     QString userNicks;
 
     QMap<QString, User *>::iterator it = userMap.begin();
@@ -78,11 +81,11 @@ QString Lobby::getReadyUsersStr() {
     return readyUserList;
 }
 
-void Lobby::setReady(QString clientID, bool ready) {
+void Lobby::toggleReady(QString clientID) {
     if (userMap.contains(clientID)) {
-        userMap[clientID]->setReady(ready);
+        userMap[clientID]->toggleReady();
 
-        emit userReadyChanged();
+        emit readyListChanged(getReadyUsersStr(), getClientList());
     }
 }
 

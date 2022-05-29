@@ -74,7 +74,7 @@ void UserListView::onUserListChanged(QStringList newUserList) {
     // Removes the clients who left the lobby
     QStringList oldUserList = userMap.keys();
     for (const QString &userNick : oldUserList) {
-        if (!userMap.contains(userNick)) {
+        if (!newUserList.contains(userNick)) {
             removeUSer(userNick);
         }
     }

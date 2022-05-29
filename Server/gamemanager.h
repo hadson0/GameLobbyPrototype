@@ -37,8 +37,8 @@ public slots:
     void joinLobbyRequest(QString lobbyID, QString clientID, QString nickname);
     void quitLobbyRequest(QString lobbyID, QString clientID);
     void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
-    void setReadyRequest(QString lobbyID, QString clintID, bool ready);
-    void onReadyListChanged();
+    void toggleReadyRequest(QString lobbyID, QString clintID);
+    void onReadyListChanged(QString readyUSers, QStringList clientList);
 };
 
 #endif // GAMEMANAGER_H

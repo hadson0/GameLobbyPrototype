@@ -17,7 +17,7 @@ public:
     QString getNickname();
 
     // Setters
-    void setReady(bool ready);
+    void toggleReady();
     void setNickname(QString nickname);
 };
 

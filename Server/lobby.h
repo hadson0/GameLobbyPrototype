@@ -19,11 +19,11 @@ public:
     // Getters
     QStringList getClientList();
     QString getUserNick(QString clientID);
-    QString getUserNicksStr();
+    QString getUsersToStr();
     QString getReadyUsersStr();
 
     // Setters
-    void setReady(QString clientID, bool ready);
+    void toggleReady(QString clientID);
 
     //Methods
     void addUser(QString clientID, QString nickname);
@@ -31,7 +31,7 @@ public:
     bool containsNickname(QString nickname);
 
 signals:
-    void userReadyChanged();
+    void readyListChanged(QString readyUsers, QStringList clientList);
 };
 
 #endif // LOBBY_H

@@ -10,8 +10,8 @@ GameManager::GameManager(QObject *parent)
     connect(this, &GameManager::processSocketMessage, messageProcessHandler, &MessageProcessHandler::processSocketMessage);
     connect(messageProcessHandler, &MessageProcessHandler::setClientID, this, &GameManager::setClientID);
     connect(messageProcessHandler, &MessageProcessHandler::newLobby, this, &GameManager::onLobbyJoined);
-    connect(messageProcessHandler, &MessageProcessHandler::userListUpdated, this, &GameManager::setUserList);
-    connect(messageProcessHandler, &MessageProcessHandler::readyListUpdated, this, &GameManager::setReadyList);
+    connect(messageProcessHandler, &MessageProcessHandler::userListUpdated, this, &GameManager::userListChanged);
+    connect(messageProcessHandler, &MessageProcessHandler::readyListUpdated, this, &GameManager::readyListChanged);
     connect(messageProcessHandler, &MessageProcessHandler::newLobbyMessageRecieved, this, &GameManager::newLobbyMessageRecieved);
 
     // Screen related message process handler connections
@@ -27,8 +27,6 @@ GameManager::GameManager(QObject *parent)
 }
 
 QString GameManager::getLobbyID() { return lobbyID; }
-
-QStringList GameManager::getUserList() { return userMap.keys(); }
 
 
 void GameManager::setClientID(QString clientID) {
@@ -49,31 +47,8 @@ void GameManager::setLobbyID(QString newLobbyID) {
     }
 }
 
-void GameManager::setUserList(QStringList newUserList) {
-    // This if statement prevents an unecessary signal emission
-    QStringList clientList = getUserList();
-    if (clientList != newUserList) {
-        // Reset the client map, setting all the clients ready status to false
-        userMap.clear();
-        for (const QString &clientID : newUserList) {
-                userMap[clientID] = false;
-        }
-        emit userListChanged(newUserList);
-    }
-}
-
-void GameManager::setReadyList(QStringList readyUsers) {
-    QMap<QString, bool>::iterator it = userMap.begin();
-    for (; it != userMap.end(); it++) {
-        it.value() = readyUsers.contains(it.key());
-    }
-
-    emit readyListChanged(readyUsers);
-}
-
 void GameManager::toggleReadyRequest() {
-    int ready = !userMap[nickname]; // 0 = false  1 = true
-    emit newMessageReadyToSend("type:setReady;payLoad:" + QString::number(ready) + ";lobbyID:" + lobbyID + ";senderID:" + clientID);
+    emit newMessageReadyToSend("type:toggleReady;payLoad:0;lobbyID:" + lobbyID + ";senderID:" + clientID);
 }
 
 void GameManager::createLobbyRequest(QString nickname) {
@@ -96,11 +71,10 @@ void GameManager::quitLobbyRequest() {
 
 void GameManager::onLobbyJoined(QString lobbyID, QStringList newUserList) {
     setLobbyID(lobbyID);
-    setUserList(newUserList);
-    emit inGameLobby();
+    emit userListChanged(newUserList);
+    emit joinedLobby();
 }
 
 void GameManager::leaveLobby() {
     nickname = lobbyID = "";
-    userMap.clear();
 }

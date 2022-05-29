@@ -60,16 +60,15 @@ void MessageProcessHandler::processSocketMessage(QString message) {
         }
     }
 
-    // type:setReady;payLoad:1;lobbyID:5678;senderID:1234
-    else if (type == "setReady") {
+    // type:toggleReady;payLoad:0;lobbyID:5678;senderID:1234
+    else if (type == "toggleReady") {
 
-        payLoad = getMessageData(message, "payLoad");
         lobbyID = getMessageData(message, "lobbyID");
         senderID = getMessageData(message, "senderID");
 
-        if (!payLoad.isEmpty() && !lobbyID.isEmpty() && !senderID.isEmpty()) {
-            qDebug() << "Set ready request, client ID: " << senderID;
-            emit setReadyRequest(lobbyID, senderID, payLoad.toInt());
+        if (!lobbyID.isEmpty() && !senderID.isEmpty()) {
+            qDebug() << "Toggle ready request, client ID: " << senderID;
+            emit toggleReadyRequest(lobbyID, senderID);
         }
     }
 
