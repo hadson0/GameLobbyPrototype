@@ -86,6 +86,7 @@ void WebSocketHandler::onSocketDisconnected() {
                 client->deleteLater();
 
                 qDebug() << "Client disconnected, ID: " << clientID;
+                emit clientDisconnected(clientID);
                 break;
             }
         }

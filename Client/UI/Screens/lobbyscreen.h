@@ -1,7 +1,7 @@
 #ifndef LOBBYSCREEN_H
 #define LOBBYSCREEN_H
 
-#include <QFrame>
+#include <QMessageBox>
 
 #include "screen.h"
 #include "UI/Components/userlistview.h"

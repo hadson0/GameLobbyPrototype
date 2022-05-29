@@ -17,6 +17,7 @@ public:
     explicit Lobby(QString lobbyID, QObject *parent);
 
     // Getters
+    QString getID();
     QStringList getClientList();
     QString getUserNick(QString clientID);
     QString getUsersToStr();
@@ -32,6 +33,7 @@ public:
 
 signals:
     void readyListChanged(QString readyUsers, QStringList clientList);
+    void userListChanged(QString users, QStringList clientList);
 };
 
 #endif // LOBBY_H

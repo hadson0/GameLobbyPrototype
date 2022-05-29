@@ -13,6 +13,7 @@ class GameManager : public QObject {
     Q_OBJECT
 
     QMap<QString, Lobby*> lobbyMap;
+    QMap<QString, Lobby*> clientLobbyMap;
 
     WebSocketHandler *webSocketHandler;
     MessageProcessHandler *messageProcessorHandler;
@@ -38,7 +39,9 @@ public slots:
     void quitLobbyRequest(QString lobbyID, QString clientID);
     void messageLobbyRequest(QString message, QString lobbyID, QString senderID);
     void toggleReadyRequest(QString lobbyID, QString clintID);
+    void onUserListChanged(QString users, QStringList clientList);
     void onReadyListChanged(QString readyUSers, QStringList clientList);
+    void onClientDisconnected(QString clientID);
 };
 
 #endif // GAMEMANAGER_H

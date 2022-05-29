@@ -141,31 +141,19 @@ void MainWindow::onErrorOccurrence(QString errorCode) {
 void MainWindow::onBackRequested() {
     // Deletes the current screen
     if (lobbyScreen != nullptr) { // If the current screen is the lobby screen
-        // Asks the user if he wants to leave the lobby
-        QMessageBox::StandardButton response = QMessageBox::question( this, "Leave lobby",
-                                                                        "Are you sure you want to leave the lobby?",
-                                                                        QMessageBox::No | QMessageBox::Yes,
-                                                                        QMessageBox::Yes);
-
-        if (response == QMessageBox::Yes) {
-            gameManager->leaveLobby();
-            delete lobbyScreen;
-            lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
-            menuScreenStack.top()->show();
-        }
+        gameManager->leaveLobby();
+        delete lobbyScreen;
+        lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
     } else {
         delete menuScreenStack.top();
         menuScreenStack.pop();
-        menuScreenStack.top()->show();
     }
+
+    menuScreenStack.top()->show();
 }
 
 void MainWindow::onConnectToServerRequest() {
-    try {
-        webSocketHandler->connectToServer("ws://127.0.0.1:8585");
-    } catch (...) {
-        this->onErrorOccurrence("connectionError");
-    }
+    webSocketHandler->connectToServer("ws://127.0.0.1:8585");
 }
 
 void MainWindow::onClientConnected() {

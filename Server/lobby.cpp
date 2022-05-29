@@ -3,51 +3,7 @@
 Lobby::Lobby(QString lobbyID, QObject *parent)
     : QObject{parent} , lobbyID(lobbyID) {}
 
-// Registers the user if it isn't registered and resets all the ready status
-void Lobby::addUser(QString clientID, QString nickname) {
-    // Adds the user
-    if (!userMap.contains(clientID)) {
-        User *newUser = new User(nickname, this);
-        userMap[clientID] = newUser;
-    }
-
-    // Set all the ready status to false
-    for (const QString &user : getClientList()) {
-        if (userMap[user]->isReady()) {
-            userMap[user]->toggleReady();
-        }
-    }
-
-    emit readyListChanged(getReadyUsersStr(), getClientList());
-}
-
-// Remove the user from the lobby and resets all the ready status
-void Lobby::removeUser(QString clientID) {
-    // removes the user
-    if (userMap.contains(clientID)) {
-        userMap.remove(clientID);
-    }
-
-    // Set all the ready status to false
-    for (const QString &user : getClientList()) {
-        if (userMap[user]->isReady()) {
-            userMap[user]->toggleReady();
-        }
-    }
-
-    emit readyListChanged(getReadyUsersStr(), getClientList());
-}
-
-bool Lobby::containsNickname(QString nickname) {
-    QMap<QString, User*>::iterator it = userMap.begin();
-    for (; it != userMap.end(); it++) {
-        if (it.value()->getNickname() == nickname) {
-            return true;
-        }
-    }
-    return false;
-}
-
+QString Lobby::getID() { return lobbyID; }
 
 // Returns a QStringList containing all the usersIDs
 QStringList Lobby::getClientList() { return userMap.keys(); }
@@ -87,5 +43,52 @@ void Lobby::toggleReady(QString clientID) {
 
         emit readyListChanged(getReadyUsersStr(), getClientList());
     }
+}
+
+// Registers the user if it isn't registered and resets all the ready status
+void Lobby::addUser(QString clientID, QString nickname) {
+    // Adds the user
+    if (!userMap.contains(clientID)) {
+        User *newUser = new User(nickname, this);
+        userMap[clientID] = newUser;
+    }
+
+    // Set all the ready status to false
+    for (const QString &user : getClientList()) {
+        if (userMap[user]->isReady()) {
+            userMap[user]->toggleReady();
+        }
+    }
+
+    emit userListChanged(getUsersToStr(), getClientList());
+    emit readyListChanged(getReadyUsersStr(), getClientList());
+}
+
+// Remove the user from the lobby and resets all the ready status
+void Lobby::removeUser(QString clientID) {
+    // removes the user
+    if (userMap.contains(clientID)) {
+        userMap.remove(clientID);
+    }
+
+    // Set all the ready status to false
+    for (const QString &user : getClientList()) {
+        if (userMap[user]->isReady()) {
+            userMap[user]->toggleReady();
+        }
+    }
+
+    emit userListChanged(getUsersToStr(), getClientList());
+    emit readyListChanged(getReadyUsersStr(), getClientList());
+}
+
+bool Lobby::containsNickname(QString nickname) {
+    QMap<QString, User*>::iterator it = userMap.begin();
+    for (; it != userMap.end(); it++) {
+        if (it.value()->getNickname() == nickname) {
+            return true;
+        }
+    }
+    return false;
 }
 

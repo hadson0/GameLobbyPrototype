@@ -65,6 +65,13 @@ void LobbyScreen::requestToggleReady() {
 }
 
 void LobbyScreen::onBackButtonClicked() {
-    emit sendRequestMessage("type:quitLobbyRequest;payLoad:0;");
-    emit backRequest();
+    QMessageBox::StandardButton response = QMessageBox::question( this, "Leave lobby",
+                                                                    "Are you sure you want to leave the lobby?",
+                                                                    QMessageBox::No | QMessageBox::Yes,
+                                                                    QMessageBox::Yes);
+
+    if (response == QMessageBox::StandardButton::Yes) {
+        emit sendRequestMessage("type:quitLobbyRequest;payLoad:0;");
+        emit backRequest();
+    }
 }

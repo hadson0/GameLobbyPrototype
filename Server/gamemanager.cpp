@@ -7,6 +7,8 @@ GameManager::GameManager(QObject *parent)
 
     //Coneccts signals and slots
     connect(webSocketHandler, &WebSocketHandler::newMessageToProcess, messageProcessorHandler, &MessageProcessHandler::processSocketMessage);
+    connect(webSocketHandler, &WebSocketHandler::clientDisconnected, this, &GameManager::onClientDisconnected);
+
     connect(messageProcessorHandler, &MessageProcessHandler::toggleReadyRequest, this, &GameManager::toggleReadyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::createLobbyRequest, this, &GameManager::createLobbyRequest);
     connect(messageProcessorHandler, &MessageProcessHandler::joinLobbyRequest, this, &GameManager::joinLobbyRequest);
@@ -30,14 +32,16 @@ void GameManager::createLobbyRequest(QString clientID, QString nickname) {
     for (; existingKeys.contains(newLobbyID); newLobbyID = generateRandomID());
 
     // Registers the new lobby
-    Lobby *lobby = new Lobby(newLobbyID, this);
-    connect(lobby, &Lobby::readyListChanged, this, &GameManager::onReadyListChanged);
+    Lobby *newLobby = new Lobby(newLobbyID, this);
+    connect(newLobby, &Lobby::userListChanged, this, &GameManager::onUserListChanged);
+    connect(newLobby, &Lobby::readyListChanged, this, &GameManager::onReadyListChanged);
 
-    lobby->addUser(clientID, nickname);
-    lobbyMap[newLobbyID] = lobby;
+    newLobby->addUser(clientID, nickname);
+    lobbyMap[newLobbyID] = newLobby;
+    clientLobbyMap[clientID] = newLobby;
 
     // Sends the lobby ID and the user list to the client
-    webSocketHandler->sendTextMessage("type:newLobbyCreated;payLoad:" + newLobbyID + ";userList:" + lobby->getUsersToStr(), clientID);
+    webSocketHandler->sendTextMessage("type:newLobbyCreated;payLoad:" + newLobbyID + ";userList:" + newLobby->getUsersToStr(), clientID);
 
     qDebug() << "New Lobby created, ID: " << newLobbyID;
 }
@@ -47,12 +51,10 @@ void GameManager::joinLobbyRequest(QString lobbyID, QString clientID, QString ni
         if (!lobbyMap[lobbyID]->containsNickname(nickname)) {
             Lobby *lobby = lobbyMap[lobbyID];
             lobby->addUser(clientID, nickname);
+            clientLobbyMap[clientID] = lobby;
 
             // Informs the client that it was a success
             webSocketHandler->sendTextMessage("type:joinSuccess;payLoad:" + lobbyID  + ";userList:" + lobby->getUsersToStr() , clientID);
-
-            // Updates the user list to all the clients in the lobby
-            webSocketHandler->sendTextMessage("type:updatedUserList;payLoad:0;userList:" + lobby->getUsersToStr(), lobby->getClientList());
         } else {
             // Informs the client that an error has occurred
             webSocketHandler->sendTextMessage("type:error;payLoad:existingNickError", clientID);
@@ -68,9 +70,7 @@ void GameManager::quitLobbyRequest(QString lobbyID, QString clientID) {
     if (lobbyMap.contains(lobbyID)) {
         Lobby *lobby = lobbyMap[lobbyID];
         lobby->removeUser(clientID);
-
-        // Updates the user list to all the users in the lobby
-        webSocketHandler->sendTextMessage("type:updatedUserList;payLoad:0;userList:" + lobby->getUsersToStr(), lobby->getClientList());
+        clientLobbyMap.remove(clientID);
     } else {
         // Informs the client that an error has occurred
         webSocketHandler->sendTextMessage("type:error;payLoad:quitError", clientID);
@@ -99,7 +99,26 @@ void GameManager::toggleReadyRequest(QString lobbyID, QString clientID) {
     }
 }
 
+void GameManager::onUserListChanged(QString users, QStringList clientList) {
+    // If there is clients in lobby
+    if (!users.isEmpty() && !clientList.isEmpty()) {
+        // Update the user list to all the clients in the lobby
+         webSocketHandler->sendTextMessage("type:updatedUserList;payLoad:0;userList:" + users, clientList);
+    } else {
+        // Delete the lobby
+        Lobby *lobby = qobject_cast<Lobby *>(sender());
+        QString lobbyID = lobby->getID();
+        lobbyMap[lobbyID]->deleteLater();
+        lobbyMap.remove(lobbyID);
+    }
+}
+
 void GameManager::onReadyListChanged(QString readyUSers, QStringList clientList) {
-    // Sends the message to all the users in the lobby
+    // Update the ready user list to all the clients in the lobby
     webSocketHandler->sendTextMessage("type:updatedReadyUserList;payLoad:0;userList:" + readyUSers, clientList);
+}
+
+void GameManager::onClientDisconnected(QString clientID) {
+    clientLobbyMap[clientID]->removeUser(clientID);
+    clientLobbyMap.remove(clientID);
 }

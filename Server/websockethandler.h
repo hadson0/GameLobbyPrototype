@@ -42,7 +42,8 @@ public slots:
     void onSocketDisconnected();
 
 signals:
-    void newMessageToProcess(QString message);    
+    void newMessageToProcess(QString message);
+    void clientDisconnected(QString clientID);
 };
 
 #endif // WEBSOCKETHANDLER_H
