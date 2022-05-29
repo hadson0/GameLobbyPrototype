@@ -1,5 +1,18 @@
 #include "mainwindow.h"
 
+void MainWindow::closeEvent(QCloseEvent *event) {
+    QMessageBox::StandardButton response = QMessageBox::question( this, "Close Game",
+                                                                    "Are you sure you want to close the game?",
+                                                                    QMessageBox::No | QMessageBox::Yes,
+                                                                    QMessageBox::Yes);
+        if (response != QMessageBox::Yes) {
+            event->ignore();
+        } else {
+            event->accept();
+            webSocketHandler->deleteLater();
+        }
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     setWindowTitle("Game Lobby Prototype");
@@ -12,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Creates a Web Socket Handler
     webSocketHandler = WebSocketHandler::getInstance(this);
-    connect(webSocketHandler, &WebSocketHandler::disconnected, this, &MainWindow::onClientDisconnected);
+    connect(webSocketHandler, &WebSocketHandler::connectionError, this, &MainWindow::onClientDisconnected);
 
     // Creates a game manager and connects it to the Web Socket Handler
     gameManager = GameManager::getInstance(this);
@@ -20,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(gameManager, &GameManager::newMessageReadyToSend, webSocketHandler, &WebSocketHandler::sendMessageToServer);
     connect(gameManager, &GameManager::lobbyIDChanged, this, &MainWindow::displayLobbyScreen);
     connect(gameManager, &GameManager::clientConnected, this, &MainWindow::onClientConnected);
+    connect(gameManager, &GameManager::error, this, &MainWindow::onErrorOccurrence);
 }
 
 // Hides the old screen and display the one mentioned in the argument
@@ -41,6 +55,7 @@ void MainWindow::displayMenuScreen(QString destinationMenuScreen) {
         connect(newScreen, &Screen::quitAppRequest, this, &QApplication::quit);
         connect(newScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
         connect(newScreen, &Screen::menuScreenDisplayRequest, this, &MainWindow::displayMenuScreen);
+        connect(newScreen, &Screen::error, this, &MainWindow::onErrorOccurrence);
 
         if (!menuScreenStack.isEmpty()) {
             menuScreenStack.top()->hide();
@@ -58,6 +73,7 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
     connect(lobbyScreen, &Screen::backRequest, this, &MainWindow::onBackRequested);
     connect(lobbyScreen, &Screen::sendRequestMessage, gameManager, &GameManager::processScreenMessage);
     connect(lobbyScreen, &Screen::menuScreenDisplayRequest, this, &MainWindow::displayMenuScreen);
+    connect(lobbyScreen, &Screen::error, this, &MainWindow::onErrorOccurrence);
 
     connect(gameManager, &GameManager::newLobbyMessageRecieved, lobbyScreen, &LobbyScreen::newMessageRecieved);
     connect(gameManager, &GameManager::userListChanged, lobbyScreen, &LobbyScreen::userListChanged);
@@ -82,28 +98,42 @@ void MainWindow::closeAllScreens() {
         menuScreenStack.pop();
     }
 
+    webSocketHandler->close();
     this->displayMenuScreen("MainMenuScreen");
 }
 
-void MainWindow::onErrorOccurrence(QString error) {
+void MainWindow::onErrorOccurrence(QString errorCode) {
     // "joinError" || "quitError" || "lobbyMessageError" || "connectionError" || "nicknameError"
-    if (error == "joinError") {
+    if (errorCode == "joinError") {
         QMessageBox::warning(this, "Error", "An error occurred while trying to join the lobby");
-    } else if (error == "lobbyMessageError") {
+    }
+
+    else if (errorCode == "lobbyMessageError") {
         QMessageBox::warning(this, "Error", "An error occurred while trying to send a message to the lobby");
-    } else if (error == "nicknameError") {
+    }
+
+    else if (errorCode == "blankNick") {
         QMessageBox::warning(this, "Error", "Nickname field cannot be left blank.");
-    } else if (error == "quitError") {
+    }
+
+    else if (errorCode == "joinFieldsError") {
+        QMessageBox::warning(this, "Error", "Please fill in all fields correctly.");
+    }
+
+    else if (errorCode == "existingNickError") {
+        QMessageBox::warning(this, "Error", "This nickname is already being used in the lobby.\n"
+                                            "Try a different one.");
+    }
+
+    else if (errorCode == "quitError") {
         QMessageBox::warning(this, "Error", "An unexpected error has occurred.\n "
                                                          "You will be disconnected from the lobby");
         closeAllScreens();
-    } else if (error == "connectionError") {
-        int answer = QMessageBox::warning(this, "Error", "Connection to server failed.");
+    }
 
-        // Returns to the main menu screen
-        if (answer == QMessageBox::Ok) {
-           closeAllScreens();
-        }
+    else if (errorCode == "connectionError") {
+        QMessageBox::warning(this, "Error", "Connection to server failed.");
+        closeAllScreens();
     }
 }
 
@@ -112,10 +142,12 @@ void MainWindow::onBackRequested() {
     // Deletes the current screen
     if (lobbyScreen != nullptr) { // If the current screen is the lobby screen
         // Asks the user if he wants to leave the lobby
-        int answer = QMessageBox::warning(this, "Leave lobby", "Are you sure you want to leave the lobby?",
-                                       QMessageBox::Ok | QMessageBox::Cancel);
+        QMessageBox::StandardButton response = QMessageBox::question( this, "Leave lobby",
+                                                                        "Are you sure you want to leave the lobby?",
+                                                                        QMessageBox::No | QMessageBox::Yes,
+                                                                        QMessageBox::Yes);
 
-        if (answer == QMessageBox::Ok) {
+        if (response == QMessageBox::Yes) {
             gameManager->leaveLobby();
             delete lobbyScreen;
             lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors

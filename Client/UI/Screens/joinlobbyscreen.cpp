@@ -56,6 +56,6 @@ void JoinLobbyScreen::onJoinButtonClicked() {
     if (newLobbyID.length() == 4 && !nickname.isEmpty()) {
         emit sendRequestMessage("type:joinLobbyRequest;payLoad:" + newLobbyID + ";nickname:" + nickname);
     } else {
-        QMessageBox::warning(this, "Error", "Please fill in all fields correctly.");
+        emit error("joinFieldsError");
     }
 }

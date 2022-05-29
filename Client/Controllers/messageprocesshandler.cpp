@@ -25,7 +25,7 @@ void MessageProcessHandler::processSocketMessage(QString message) {
     static QRegularExpression separator(",");
 
     QString type = getMessageData(message, "type");
-    QString clientID = "", lobbyID = "", senderNick = "", lobbyMessage = "";
+    QString clientID = "", lobbyID = "", senderNick = "", lobbyMessage = "", errorCode = "";
     QStringList userList;
 
     // type:uniqueId;payLoad:1234
@@ -82,8 +82,11 @@ void MessageProcessHandler::processSocketMessage(QString message) {
     // Errors
 
     // type:joinError;payLoad:DNE
-    else if (type == "joinError" || type == "quitError" || type == "lobbyMessageError") {
-        emit error(type);
+    else if (type == "error") {
+        errorCode = getMessageData(message, "payLoad");
+        if (!errorCode.isEmpty()) {            
+            emit error(errorCode);
+        }
     }
 }
 

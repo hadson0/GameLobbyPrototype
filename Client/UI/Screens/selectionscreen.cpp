@@ -51,7 +51,7 @@ void SelectionScreen::onCreateLobbyCklicked() {
     if (!nickname.isEmpty()) {
         emit sendRequestMessage("type:createLobbyRequest;payload:0;nickname:" + nickname);
     } else {
-        QMessageBox::warning(this, "Error", "Nickname field cannot be left blank.");
+        emit error("blankNick");
     }
 }
 

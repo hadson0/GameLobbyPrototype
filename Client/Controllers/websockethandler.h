@@ -31,6 +31,7 @@ public:
     bool isValid();
     void connectToServer(QString hostAddress);
     void sendMessageToServer(QString message);
+    void close();
 
 public slots:
     void onConnected();
@@ -38,7 +39,7 @@ public slots:
 
 signals:
     void newMessageReadyForProcessing(QString message);   
-    void disconnected();
+    void connectionError();
 };
 
 #endif // WEBSOCKETHANDLER_H

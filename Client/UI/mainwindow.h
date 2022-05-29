@@ -1,14 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QDebug>
+#include <typeinfo>
 
+#include <QDebug>
 #include <QMainWindow>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QApplication>
 #include <QStack>
 #include <QMessageBox>
+#include <QCloseEvent>
 
 #include "Controllers/gamemanager.h"
 #include "Controllers/websockethandler.h"
@@ -28,6 +30,8 @@ class MainWindow : public QMainWindow {
     GameManager *gameManager;
     WebSocketHandler *webSocketHandler;
 
+    void closeEvent(QCloseEvent *event);
+
 public:
     MainWindow(QWidget *parent = nullptr);
 
@@ -42,4 +46,5 @@ public slots:
     void onClientConnected();
     void onClientDisconnected();
 };
+
 #endif // MAINWINDOW_H

@@ -35,6 +35,7 @@ signals:
     void sendRequestMessage(QString requestMessage);
     void quitAppRequest();
     void backRequest();
+    void error(QString errorCode);
 };
 
 #endif // SCREEN_H

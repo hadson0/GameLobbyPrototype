@@ -43,7 +43,7 @@ void GameManager::createLobbyRequest(QString clientID, QString nickname) {
 }
 
 void GameManager::joinLobbyRequest(QString lobbyID, QString clientID, QString nickname) {
-    try {
+    if (lobbyMap.contains(lobbyID)) {
         if (!lobbyMap[lobbyID]->containsNickname(nickname)) {
             Lobby *lobby = lobbyMap[lobbyID];
             lobby->addUser(clientID, nickname);
@@ -53,10 +53,13 @@ void GameManager::joinLobbyRequest(QString lobbyID, QString clientID, QString ni
 
             // Updates the user list to all the clients in the lobby
             webSocketHandler->sendTextMessage("type:updatedUserList;payLoad:0;userList:" + lobby->getUserNicksStr(), lobby->getClientList());
+        } else {
+            // Informs the client that an error has occurred
+            webSocketHandler->sendTextMessage("type:error;payLoad:existingNickError", clientID);
         }
-    } catch (...) {
+    } else {
         // Informs the client that an error has occurred
-        webSocketHandler->sendTextMessage("type:joinError;payLoad:DNE", clientID);
+        webSocketHandler->sendTextMessage("type:error;payLoad:joinError", clientID);
     }
 }
 
@@ -70,7 +73,7 @@ void GameManager::quitLobbyRequest(QString lobbyID, QString clientID) {
         webSocketHandler->sendTextMessage("type:updatedUserList;payLoad:0;userList:" + lobby->getUserNicksStr(), lobby->getClientList());
     } else {
         // Informs the client that an error has occurred
-        webSocketHandler->sendTextMessage("type:quitError;payLoad:DNE", clientID);
+        webSocketHandler->sendTextMessage("type:error;payLoad:quitError", clientID);
     }
 }
 
@@ -84,7 +87,7 @@ void GameManager::messageLobbyRequest(QString message, QString lobbyID, QString 
         webSocketHandler->sendTextMessage("type:lobbyMessage;payLoad:" + message + ";senderNick:" + senderNick, lobby->getClientList());
     } else {
         // Informs the client that an error has occurred
-        webSocketHandler->sendTextMessage("type:lobbyMessageError;payLoad:DNE", clientID);
+        webSocketHandler->sendTextMessage("type:error;payLoad:lobbyMessageError", clientID);
     }
 }
 

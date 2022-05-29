@@ -6,10 +6,16 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     : QObject{parent} {
     webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, this);
 
+
+
     // Connects signals and slots
     connect(webSocket, &QWebSocket::connected, this, &WebSocketHandler::onConnected);
     connect(webSocket, &QWebSocket::textFrameReceived, this, &WebSocketHandler::onTextMessageReceived);
-    connect(webSocket, &QWebSocket::disconnected, this, &WebSocketHandler::disconnected);
+    connect(webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this,
+            [this](const QAbstractSocket::SocketError error) {
+                Q_UNUSED(error);
+                emit connectionError();
+            });
 }
 
 WebSocketHandler::~WebSocketHandler() {
@@ -26,6 +32,10 @@ void WebSocketHandler::connectToServer(QString hostAddress) {
 
 void WebSocketHandler::sendMessageToServer(QString message) {
     webSocket->sendTextMessage(message);
+}
+
+void WebSocketHandler::close() {
+    webSocket->close();
 }
 
 void WebSocketHandler::onConnected() {}
