@@ -19,15 +19,15 @@ public slots:
 signals:
     // Socket related signals
     void setClientID(QString clientID);
-    void newLobby(QString newLobbyID, QStringList newClientList);
-    void clientListUpdated(QStringList newClientList);
-    void newLobbyMessageRecieved(QString message);
+    void newLobby(QString newLobbyID, QStringList newUSerList);
+    void userListUpdated(QStringList newUSerList);
+    void newLobbyMessageRecieved(QString message, QString senderNick);
     void readyListUpdated(QStringList newReadyList);
 
     // Screen related signals
     void connectToServerRequest();
     void displayScreenRequest(QString destinationScreen);
-    void createLobbyRequest(QString nickname);
+    void createLobbyRequest(QString userNick);
     void joinLobbyRequest(QString newLobbyID, QString nickname);
     void sendLobbyMessageRequest(QString message);
     void toggleReadyRequest();

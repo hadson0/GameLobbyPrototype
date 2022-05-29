@@ -60,12 +60,29 @@ void MainWindow::displayLobbyScreen(QString lobbyID) {
     connect(lobbyScreen, &Screen::menuScreenDisplayRequest, this, &MainWindow::displayMenuScreen);
 
     connect(gameManager, &GameManager::newLobbyMessageRecieved, lobbyScreen, &LobbyScreen::newMessageRecieved);
-    connect(gameManager, &GameManager::clientListChanged, lobbyScreen, &LobbyScreen::clientListChanged);
+    connect(gameManager, &GameManager::userListChanged, lobbyScreen, &LobbyScreen::userListChanged);
     connect(gameManager, &GameManager::readyListChanged, lobbyScreen, &LobbyScreen::readyListChanged);
     connect(gameManager, &GameManager::lobbyLeft, this, &MainWindow::onBackRequested);
 
     menuScreenStack.top()->hide();
     lobbyScreen->show();
+}
+
+void MainWindow::closeAllScreens() {
+    // If the lobby screen is open, closes it
+    if (lobbyScreen != nullptr) {
+        gameManager->leaveLobby();
+        lobbyScreen->deleteLater();
+        lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
+    }
+
+    // Closes all screens
+    while (!menuScreenStack.isEmpty()) {
+        delete menuScreenStack.top();
+        menuScreenStack.pop();
+    }
+
+    this->displayMenuScreen("MainMenuScreen");
 }
 
 void MainWindow::onErrorOccurrence(QString error) {
@@ -77,33 +94,15 @@ void MainWindow::onErrorOccurrence(QString error) {
     } else if (error == "nicknameError") {
         QMessageBox::warning(this, "Error", "Nickname field cannot be left blank.");
     } else if (error == "quitError") {
-        int answer = QMessageBox::warning(this, "Error", "An unexpected error has occurred.\n "
+        QMessageBox::warning(this, "Error", "An unexpected error has occurred.\n "
                                                          "You will be disconnected from the lobby");
-
-        // Closes the lobby screen
-        if (lobbyScreen != nullptr && answer == QMessageBox::Ok) {
-            delete lobbyScreen;
-            lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
-            menuScreenStack.top()->show();
-        }
+        closeAllScreens();
     } else if (error == "connectionError") {
         int answer = QMessageBox::warning(this, "Error", "Connection to server failed.");
 
         // Returns to the main menu screen
         if (answer == QMessageBox::Ok) {
-            // If the lobby screen is open, closes it
-            if (lobbyScreen != nullptr) {
-                delete lobbyScreen;
-                lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
-            }
-
-            // Closes all screens
-            while (!menuScreenStack.isEmpty()) {
-                delete menuScreenStack.top();
-                menuScreenStack.pop();
-            }
-
-            this->displayMenuScreen("MainMenuScreen");
+           closeAllScreens();
         }
     }
 }
@@ -117,6 +116,7 @@ void MainWindow::onBackRequested() {
                                        QMessageBox::Ok | QMessageBox::Cancel);
 
         if (answer == QMessageBox::Ok) {
+            gameManager->leaveLobby();
             delete lobbyScreen;
             lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
             menuScreenStack.top()->show();

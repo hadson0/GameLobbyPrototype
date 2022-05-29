@@ -9,8 +9,8 @@ class GameManager : public QObject {
     Q_OBJECT
 
     QString clientID; // Lobby host ID (who created the lobby)
-    QMap<QString, bool> clientMap; // <ClientID, isReady>
-    QString lobbyID;
+    QMap<QString, bool> userMap; // <nickname, isReady>
+    QString lobbyID, nickname;
 
     MessageProcessHandler *messageProcessHandler;
 
@@ -33,14 +33,14 @@ public:
 
     // Getters
     QString getLobbyID();
-    QStringList getClientList();
+    QStringList getUserList();
 
 public slots:    
     // Setters
     void setClientID(QString clientID);
     void setLobbyID(QString lobbyID);
-    void setClientList(QStringList clients);
-    void setReadyList(QStringList readyClients);
+    void setUserList(QStringList newUserList);
+    void setReadyList(QStringList readyUserList);
 
     // Methods   
     void toggleReadyRequest();
@@ -48,7 +48,8 @@ public slots:
     void joinLobbyRequested(QString lobbyID, QString nickname);
     void quitLobbyRequest();
     void sendLobbyMessageRequested(QString message);
-    void onLobbyJoined(QString lobbyID, QStringList clients);
+    void onLobbyJoined(QString lobbyID, QStringList userList);
+    void leaveLobby();
 
 signals:
     void processSocketMessage(QString message);
@@ -56,12 +57,12 @@ signals:
 
     void connectToServerRequest();
     void clientConnected();
-    void clientListChanged(QStringList clientList);
-    void readyListChanged(QStringList readyClients);
+    void userListChanged(QStringList newUserList);
+    void readyListChanged(QStringList readyUsers);
     void lobbyIDChanged(QString newLobbyID);
     void lobbyLeft();
 
-    void newLobbyMessageRecieved(QString message);
+    void newLobbyMessageRecieved(QString message, QString senderNick);
     void newMessageReadyToSend(QString message);
     void inGameLobby();
 

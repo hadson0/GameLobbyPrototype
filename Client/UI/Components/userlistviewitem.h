@@ -1,20 +1,20 @@
-#ifndef CLIENTLISTITEM_H
-#define CLIENTLISTITEM_H
+#ifndef USERLISTVIEWITEM_H
+#define USERLISTVIEWITEM_H
 
 #include "backgroundedframe.h"
 #include "customlabel.h"
 
-class ClientListItem : public BackgroundedFrame {
+class UserListViewItem : public BackgroundedFrame {
     Q_OBJECT
 
-    CustomLabel *clientIDLabel;
+    CustomLabel *nicknameLabel;
     QColor defaultColor, readyColor;
     bool ready;
 
     void resizeEvent(QResizeEvent *event);
 
 public:
-    explicit ClientListItem(QString nickname, QWidget *parent = nullptr);
+    explicit UserListViewItem(QString nickname, QWidget *parent = nullptr);
 
     // Getters
     bool isReady();
@@ -26,4 +26,4 @@ public:
     void setHighlighted();
 };
 
-#endif // CLIENTLISTITEM_H
+#endif // USERLISTVIEWITEM_H

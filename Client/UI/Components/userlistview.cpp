@@ -1,14 +1,14 @@
-#include "clientlistview.h"
+#include "userlistview.h"
 
 
 #include <QDebug>
 
-ClientListView::ClientListView(QWidget *parent)
+UserListView::UserListView(QWidget *parent)
     : BackgroundedFrame{parent} {
     setPadding(10);
 }
 
-void ClientListView::paintEvent(QPaintEvent *event) {
+void UserListView::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);    
 
     // Setup the painter
@@ -35,69 +35,61 @@ void ClientListView::paintEvent(QPaintEvent *event) {
     painter.fillPath(listPath,listColor);
     painter.drawPath(listPath);
 
-    // Client Item
+    // User Item
     int clientX = 2 * this->getPadding(), clientY = clientX + 1;
     int clientWidth = this->getAvaliableWidth() - clientX, clientHeight = (this->getAvaliableHeight() - clientY) * 0.16;
     setSpacing((this->getAvaliableHeight() - clientY) * 0.008);
 
     // Draws in reversed order to display in the correct order
-    QStringList clientIDList = clientMap.keys();
+    QStringList clientIDList = userMap.keys();
     QStringList::reverse_iterator clientIt = clientIDList.rbegin();
     for (; clientIt != clientIDList.rend(); clientIt++) {
-        clientMap[*clientIt]->setGeometry(clientX, clientY, clientWidth, clientHeight);
+        userMap[*clientIt]->setGeometry(clientX, clientY, clientWidth, clientHeight);
         clientY += clientHeight + getSpacing();
     }
 }
 
-void ClientListView::addClientItem(QString clientID, QString nickname) {
-    if (!clientMap.contains(clientID)) {
-        clientMap[clientID] = new ClientListItem(nickname, this);
+void UserListView::addUser(QString userNick) {
+    if (!userMap.contains(userNick)) {
+        userMap[userNick] = new UserListViewItem(userNick, this);
     }
 }
 
-void ClientListView::removeClientItem(QString clientID) {
-    if (clientMap.contains(clientID)) {
-        delete clientMap[clientID];
-        clientMap.remove(clientID);
+void UserListView::removeUSer(QString clientID) {
+    if (userMap.contains(clientID)) {
+        userMap[clientID]->deleteLater();
+        userMap.remove(clientID);
     }
 }
 
-void ClientListView::setReady(QString clientID, bool ready) {
-    if (clientID.contains(clientID)) {
-        clientMap[clientID]->setReady(ready);
+void UserListView::setReady(QString userNick, bool ready) {
+    if (userNick.contains(userNick)) {
+        userMap[userNick]->setReady(ready);
     }
 }
 
 // Adds the clients to the list
-void ClientListView::onClientListChanged(QStringList newClientList) {
-    static QRegularExpression separator(":");
-    QStringList clientIDs, clientNicknames;
-
-    for (const QString &client : newClientList) {
-        QStringList clientInfo = client.split(separator);
-        clientIDs.push_back(clientInfo[0]);
-        clientNicknames.push_back(clientInfo[1]);
-    }
+void UserListView::onUserListChanged(QStringList newUserList) {
 
     // Removes the clients who left the lobby
-    QStringList oldClientList = clientMap.keys();
-    for (const QString &clientID : oldClientList) {
-        if (!clientIDs.contains(clientID)) {
-            removeClientItem(clientID);
+    QStringList oldUserList = userMap.keys();
+    for (const QString &userNick : oldUserList) {
+        if (!userMap.contains(userNick)) {
+            removeUSer(userNick);
         }
     }
 
     // Adds the new clients
-    for (qsizetype i = 0; i < newClientList.size(); i++) {
-        addClientItem(clientIDs[i], clientNicknames[i]);
+    for (const QString &userNick : newUserList) {
+        addUser(userNick);
     }
 
     this->update();
 }
 
-void ClientListView::onReadyListChanged(QStringList newReadyList) {
-    QMap<QString, ClientListItem*>::iterator it = clientMap.begin();
-    for (; it != clientMap.end(); it++) {
+void UserListView::onReadyListChanged(QStringList newReadyList) {
+    QMap<QString, UserListViewItem*>::iterator it = userMap.begin();
+    for (; it != userMap.end(); it++) {
         it.value()->setReady(newReadyList.contains(it.key()));
     }
 

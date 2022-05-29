@@ -20,67 +20,62 @@ QString MessageProcessHandler::getMessageData(QString message, QString dataIdent
 }
 
 void MessageProcessHandler::processSocketMessage(QString message) {
-    // qDebug() << "Client App: Message to process: " << message;
+    // qDebug() << "User App: Message to process: " << message;
 
     static QRegularExpression separator(",");
 
     QString type = getMessageData(message, "type");
-    QString clientID = "", lobbyID = "", senderID = "", lobbyMessage = "";
-    QStringList clientList;
+    QString clientID = "", lobbyID = "", senderNick = "", lobbyMessage = "";
+    QStringList userList;
 
     // type:uniqueId;payLoad:1234
     if (type == "uniqueID") {
 
         clientID = getMessageData(message, "payLoad");
         if (!clientID.isEmpty()) {
-            qDebug() << "Client ID received: " << clientID;
+            qDebug() << "User ID received: " << clientID;
             emit setClientID(clientID);
         }
     }
 
-    // type:newLobbyCreated;payLoad:1234;clientList:hadson0:4312
+    // type:newLobbyCreated;payLoad:"1234;userList:hadson0,whoam1
     else if (type == "newLobbyCreated" || type == "joinSuccess") {
         lobbyID = getMessageData(message, "payLoad");
-        QString clientListString = getMessageData(message, "clientList");
-        clientList = clientListString.split(separator);
+        userList = getMessageData(message, "userList").split(separator);
 
-
-        if (!lobbyID.isEmpty() && !clientList.isEmpty()) {
+        if (!lobbyID.isEmpty() && !userList.isEmpty()) {
             qDebug() << "New lobby, ID: " << lobbyID;
-            emit newLobby(lobbyID, clientList);
+            emit newLobby(lobbyID, userList);
         }
     }
 
-    // type:updatedClientList;payLoad:1234,5678,4444
-    else if (type == "updatedClientList") {
-        clientList = getMessageData(message, "clientList").split(separator);
+    // type:updatedUserList;payLoad:0;userList:hadson0,whoam1
+    else if (type == "updatedUserList") {
+        userList = getMessageData(message, "userList").split(separator);
 
-        if (!clientList.isEmpty()) {
-            qDebug() << "Clients in lobby: " << clientList;
-            emit clientListUpdated(clientList);
+        if (!userList.isEmpty()) {
+            qDebug() << "Users in lobby: " << userList;
+            emit userListUpdated(userList);
         }
     }
 
-    // type:lobbyMessage;payLoad:HelloWorld;senderID:1234
+    // type:lobbyMessage;payLoad:HelloLobby;senderNick:hadson0
     else if (type == "lobbyMessage") {
-
         lobbyMessage = getMessageData(message, "payLoad");
-        senderID = getMessageData(message, "senderID");
+        senderNick = getMessageData(message, "senderNick");
 
-        if (!lobbyMessage.isEmpty() && !senderID.isEmpty()) {
-            QString displayMessage = senderID + ": " + lobbyMessage;
-
-            emit newLobbyMessageRecieved(displayMessage);
+        if (!lobbyMessage.isEmpty() && !senderNick.isEmpty()) {
+            emit newLobbyMessageRecieved(lobbyMessage, senderNick);
         }
     }
 
-    // type:updatedReadyClientList;payLoad:0;clientList:3090
-    else if (type == "updatedReadyClientList") {
-        clientList = getMessageData(message, "clientList").split(separator);
+    // type:updatedReadyUserList;payLoad:0;userList:hadson0,whoam1
+    else if (type == "updatedReadyUserList") {
+        userList = getMessageData(message, "userList").split(separator);
 
-        if (!clientList.isEmpty()) {
-            qDebug() << "Ready clients in lobby: " << clientList;
-            emit readyListUpdated(clientList);
+        if (!userList.isEmpty()) {
+            qDebug() << "Ready users in lobby: " << userList;
+            emit readyListUpdated(userList);
         }
     }
 
@@ -121,7 +116,7 @@ void MessageProcessHandler::processScreenMessage(QString message) {
         }
     }
 
-    // type:sendLobbyMessageRequest;payload:" + message
+    // type:sendLobbyMessageRequest;payload:HelloLobby
     else if (type == "sendLobbyMessageRequest") {
         lobbyMessage = getMessageData(message, "payLoad");
         if (!lobbyMessage.isEmpty()) {

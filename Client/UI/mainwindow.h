@@ -18,7 +18,6 @@
 #include "Screens/lobbyscreen.h"
 #include "Screens/joinlobbyscreen.h"
 
-
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -34,6 +33,7 @@ public:
 
     void displayMenuScreen(QString targetScreen);
     void displayLobbyScreen(QString lobbyID);
+    void closeAllScreens();
     void onErrorOccurrence(QString error);
 
 public slots:

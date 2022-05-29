@@ -4,11 +4,11 @@ LobbyScreen::LobbyScreen(QString lobbyID, QWidget *parent)
     : Screen{parent}, lobbyID(lobbyID) {
     setPadding(25);    
 
-    // Client List View
-    clientListView = new ClientListView(this);
-    connect(this, &LobbyScreen::clientListChanged, clientListView, &ClientListView::onClientListChanged);
-    connect(this, &LobbyScreen::readyListChanged, clientListView, &ClientListView::onReadyListChanged);
-    connect(this, &LobbyScreen::setReady, clientListView, &ClientListView::setReady);
+    // User List View
+    userListView = new UserListView(this);
+    connect(this, &LobbyScreen::userListChanged, userListView, &UserListView::onUserListChanged);
+    connect(this, &LobbyScreen::readyListChanged, userListView, &UserListView::onReadyListChanged);
+    connect(this, &LobbyScreen::setReady, userListView, &UserListView::setReady);
 
     // Chat Frame
     chatFrame = new ChatFrame(this);
@@ -45,10 +45,10 @@ void LobbyScreen::resizeEvent(QResizeEvent *event) {
     int lobbyIDLabelWidth = this->getAvaliableWidth() - lobbyIDLabelX - readyButtonWidth, lobbyIDLabelHeight = backButtonHeight;
     lobbyIDLabel->setGeometry(lobbyIDLabelX, lobbyIDLabelY, lobbyIDLabelWidth, lobbyIDLabelHeight);
 
-    // Client List View
+    // User List View
     int clientListViewX = this->getPadding(), clientListViewY = this->getPadding() + 75;
     int clientListViewWidth = (this->getAvaliableWidth() - this->getPadding()) * 0.4, clientListViewHeight = this->getAvaliableHeight() - 75;
-    clientListView->setGeometry(clientListViewX, clientListViewY, clientListViewWidth, clientListViewHeight);
+    userListView->setGeometry(clientListViewX, clientListViewY, clientListViewWidth, clientListViewHeight);
 
     // Chat Frame
     int chatFrameX = clientListViewWidth + 2 * this->getPadding(), chatFrameY = clientListViewY;

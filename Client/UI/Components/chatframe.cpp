@@ -18,16 +18,6 @@ ChatFrame::ChatFrame(QWidget *parent)
 
 }
 
-void ChatFrame::onSendButtonClicked() {
-    QString message = chatInput->toPlainText();
-    chatInput->clear();
-    emit sendMessage(message);
-}
-
-void ChatFrame::onMessageRecieved(QString message) {
-    chatView->append(message);
-}
-
 void ChatFrame::resizeEvent(QResizeEvent *event) {
     Q_UNUSED(event);    
 
@@ -45,5 +35,15 @@ void ChatFrame::resizeEvent(QResizeEvent *event) {
     int buttonX = chatInputWidht + 2 * getPadding(), buttonY = chatInputY;
     int buttonWidth = this->getAvaliableWidth() - chatInputWidht - getPadding(), buttonHeight = chatInputHeight;
     sendMessageButton->setGeometry(buttonX, buttonY, buttonWidth, buttonHeight);
+}
+
+void ChatFrame::onSendButtonClicked() {
+    QString message = chatInput->toPlainText();
+    chatInput->clear();
+    emit sendMessage(message);
+}
+
+void ChatFrame::onMessageRecieved(QString message, QString senderNick) {
+    chatView->append(senderNick + ": " + message);
 }
 

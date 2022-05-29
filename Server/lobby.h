@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QDebug>
 
 #include "user.h"
 
@@ -10,26 +11,27 @@ class Lobby : public QObject {
     Q_OBJECT
 
     QString lobbyID;
-    QMap<QString, User *> clientMap; // <ClientID, User>
+    QMap<QString, User *> userMap; // <clientID, User>
 
 public:
     explicit Lobby(QString lobbyID, QObject *parent);
 
     // Getters
     QStringList getClientList();
-    QString getClientsInfo();
-    QStringList getReadyClientIDList();
-    QString getReadyListToStr();
+    QString getUserNick(QString clientID);
+    QString getUserNicksStr();
+    QString getReadyUsersStr();
 
     // Setters
     void setReady(QString clientID, bool ready);
 
     //Methods
-    void addClient(QString clientID, QString nickname);
-    void removeClient(QString clientID);
+    void addUser(QString clientID, QString nickname);
+    void removeUser(QString clientID);
+    bool containsNickname(QString nickname);
 
 signals:
-    void clientReadyChanged();
+    void userReadyChanged();
 };
 
 #endif // LOBBY_H

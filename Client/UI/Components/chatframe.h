@@ -19,7 +19,7 @@ public:
 
 public slots:
     void onSendButtonClicked();
-    void onMessageRecieved(QString message);
+    void onMessageRecieved(QString message, QString senderNick);
 
 signals:
     void sendMessage(QString message);

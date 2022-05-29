@@ -4,7 +4,7 @@
 #include <QFrame>
 
 #include "screen.h"
-#include "UI/Components/clientlistview.h"
+#include "UI/Components/userlistview.h"
 #include "UI/Components/chatframe.h"
 #include "UI/Components/customlabel.h"
 #include "UI/Components/custompushbutton.h"
@@ -13,7 +13,7 @@ class LobbyScreen : public Screen {
     Q_OBJECT
 
     // Custom frames
-    ClientListView *clientListView;
+    UserListView *userListView;
     ChatFrame *chatFrame;
 
     // Widgets
@@ -34,8 +34,8 @@ public slots:
 
 signals:
     void setReady(QString clientID, bool ready);
-    void newMessageRecieved(QString message);
-    void clientListChanged(QStringList newClientLsit);
+    void newMessageRecieved(QString message, QString senderNick);
+    void userListChanged(QStringList newUserLsit);
     void readyListChanged(QStringList newReadyList);
 };
 

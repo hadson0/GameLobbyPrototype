@@ -13,7 +13,6 @@ WebSocketHandler::WebSocketHandler(QObject *parent)
     if (webSocketServer->listen(QHostAddress::Any, 8585)) {
         qDebug() << "Server is running";
     } else {
-        throw;
         qDebug() << "Error starting to listen for new connections";
     }
 }
@@ -34,14 +33,14 @@ QString WebSocketHandler::generateRandomID() {
 void WebSocketHandler::sendTextMessage(QString message, QString clientID) {
     // Checks if the client is registered
     if (clientMap.contains(clientID)) {
-        QWebSocket *existingClient = clientMap[clientID];
-        existingClient->sendTextMessage(message);
-//         qDebug() << "Send message:" << message;
+        QWebSocket *client = clientMap[clientID];
+        client->sendTextMessage(message);
+         qDebug() << "Send message:" << message;
     }
 }
 
 // Sends a text message to multiple clients
-void WebSocketHandler::sendTextMessageToClients(QString message, QStringList clientsID) {
+void WebSocketHandler::sendTextMessage(QString message, QStringList clientsID) {
     for (auto &clientID : clientsID)
         sendTextMessage(message, clientID);
 }
@@ -70,7 +69,7 @@ void WebSocketHandler::onNewSocketConnection() {
 }
 
 void WebSocketHandler::onTextMessageReceived(QString message) {
-//     qDebug() << "Server received: " << message;
+     qDebug() << "Server received: " << message;
     emit newMessageToProcess(message);
 }
 
@@ -78,7 +77,7 @@ void WebSocketHandler::onSocketDisconnected() {
     // Gets the client that sent the signal using the sender function
     QWebSocket *client = qobject_cast<QWebSocket *>(sender());
 
-    if (client) {
+    try {
         // Iterates through the map until it finds the client, then disconnect it (delete it)
         for (auto it = clientMap.begin(); it != clientMap.end(); it++) {
             if (it.value()->peerAddress() == client->peerAddress() && it.value()->peerPort() == client->peerPort()) {
@@ -90,5 +89,7 @@ void WebSocketHandler::onSocketDisconnected() {
                 break;
             }
         }
+    } catch (...) {
+        qDebug() << "Error disconnecting client";
     }
 }
