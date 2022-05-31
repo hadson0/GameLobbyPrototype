@@ -123,6 +123,8 @@ void GameManager::onReadyListChanged(QString readyUSers, QStringList clientList)
 }
 
 void GameManager::onClientDisconnected(QString clientID) {
-    clientLobbyMap[clientID]->removeUser(clientID);
-    clientLobbyMap.remove(clientID);
+    if (clientLobbyMap.contains(clientID)) { // If the client was in a lobby
+        clientLobbyMap[clientID]->removeUser(clientID); // Exits the lobby
+        clientLobbyMap.remove(clientID);
+    }
 }

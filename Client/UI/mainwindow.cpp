@@ -144,12 +144,15 @@ void MainWindow::onBackRequested() {
         gameManager->leaveLobby();
         delete lobbyScreen;
         lobbyScreen = nullptr; // Sets the lobbyScreen pointer to null, to avoid errors
+        menuScreenStack.top()->show();
+    } else if (SelectionScreen *currentScreen = qobject_cast<SelectionScreen *>(sender())) { // If the current screen is a SelectionScreen
+        Q_UNUSED(currentScreen);
+        this->closeAllScreens();
     } else {
         delete menuScreenStack.top();
         menuScreenStack.pop();
+        menuScreenStack.top()->show();
     }
-
-    menuScreenStack.top()->show();
 }
 
 void MainWindow::onConnectToServerRequest() {
